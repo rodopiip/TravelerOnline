@@ -72,10 +72,11 @@ CREATE TABLE IF NOT EXISTS `travellerdb`.`users` (
   `phone_number` VARCHAR(20) NULL DEFAULT NULL,
   `date_of_birth` DATE NOT NULL,
   `profile_photo` VARCHAR(255) NULL DEFAULT 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
-  `is_verified` TINYINT NULL DEFAULT NULL,
+  `verified` TINYINT NULL DEFAULT NULL,
   `additional_info` VARCHAR(255) NULL DEFAULT NULL,
   `gender` VARCHAR(2) NULL DEFAULT NULL,
   `date_added` DATETIME NOT NULL DEFAULT NOW(),
+  `verification_code` VARCHAR(100) NULL,
   PRIMARY KEY (`Id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 11
