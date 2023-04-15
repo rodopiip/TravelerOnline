@@ -1,9 +1,9 @@
 package com.example.travelleronline.controllers;
 
-import com.example.travelleronline.model.DTOs.User.ChangePassDTO;
-import com.example.travelleronline.model.DTOs.User.LoginDTO;
-import com.example.travelleronline.model.DTOs.User.RegisterDTO;
-import com.example.travelleronline.model.DTOs.User.UserWithoutPassDTO;
+import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
+import com.example.travelleronline.model.DTOs.user.LoginDTO;
+import com.example.travelleronline.model.DTOs.user.RegisterDTO;
+import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.service.UserService;

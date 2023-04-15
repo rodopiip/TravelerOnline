@@ -1,20 +1,17 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.DTOs.User.ChangePassDTO;
-import com.example.travelleronline.model.DTOs.User.LoginDTO;
-import com.example.travelleronline.model.DTOs.User.RegisterDTO;
-import com.example.travelleronline.model.DTOs.User.UserWithoutPassDTO;
+import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
+import com.example.travelleronline.model.DTOs.user.LoginDTO;
+import com.example.travelleronline.model.DTOs.user.RegisterDTO;
+import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service

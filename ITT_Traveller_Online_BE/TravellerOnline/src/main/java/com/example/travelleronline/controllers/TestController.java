@@ -1,15 +1,11 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.ErrorDTO;
-import com.example.travelleronline.model.DTOs.User.LoginDTO;
-import com.example.travelleronline.model.DTOs.User.UserWithoutPassDTO;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.service.ValidationService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

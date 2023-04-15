@@ -1,4 +1,4 @@
-package com.example.travelleronline.model.DTOs.User;
+package com.example.travelleronline.model.DTOs.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

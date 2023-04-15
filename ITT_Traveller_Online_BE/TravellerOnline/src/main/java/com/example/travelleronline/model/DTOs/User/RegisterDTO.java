@@ -1,6 +1,5 @@
-package com.example.travelleronline.model.DTOs.User;
+package com.example.travelleronline.model.DTOs.user;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
