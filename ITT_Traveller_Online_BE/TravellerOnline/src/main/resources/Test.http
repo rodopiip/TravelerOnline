@@ -1,0 +1,20 @@
+GET localhost:3333/users/1
+###
+
+POST localhost:3333/users
+Content-Type: application/json
+
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "password": "mypassword123",
+  "email": "johndoe@example.com",
+  "phone_number": "+1 (555) 555-5555",
+  "date_of_birth": "1980-01-01",
+  "profile_photo": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+  "verified": 0,
+  "additional_info": "Some additional information",
+  "gender": "M",
+  "verification_code": "abc123"
+}
+
