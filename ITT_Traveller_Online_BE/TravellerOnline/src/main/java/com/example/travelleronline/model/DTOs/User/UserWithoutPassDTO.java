@@ -11,11 +11,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserWithoutPassDTO {
     private int id;
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String email;
-    private String phone_number;
-    private String profile_photo;
-    private boolean is_verified;
+    private String phoneNumber;
+    private String profilePhoto;
+    private boolean isVerified;
     private String gender;
 }

@@ -16,27 +16,27 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RegisterDTO {
 
-    private String first_name;
+    private String firstName;
 
-    private String last_name;
+    private String lastName;
 
     private String password;
-    private String confirm_password;
+    private String confirmPassword;
     private String email;
 
-    private String phone_number;
+    private String phoneNumber;
 
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
-    private String profile_photo;
+    private String profilePhoto;
 
-    private Boolean is_verified;
+    private Boolean isVerified;
 
-    private String additional_info;
+    private String additionalInfo;
 
     private String gender;
 
     private LocalDateTime dateAdded= LocalDateTime.now();
-    private String verification_code;
+    private String verificationCode;
 
 }

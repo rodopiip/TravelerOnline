@@ -24,6 +24,7 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper mapper;
+
     @Autowired
     private ValidationService validator;
 
@@ -46,7 +47,7 @@ public class UserService {
         if(!validator.IsValidEmail(email)){
             throw new BadRequestException("Incorrect Email");
         }
-        if(!(regData.getPassword().equals( regData.getConfirm_password()))){
+        if(!(regData.getPassword().equals( regData.getConfirmPassword()))){
             throw new BadRequestException("Passwords must match");
         }
         User u= mapper.map(regData,User.class);
@@ -65,7 +66,7 @@ public class UserService {
 
     public UserWithoutPassDTO changePass(ChangePassDTO changePassData,int id){
         User u=userRepository.findById(id);
-        u.setPassword(changePassData.getNew_password());
+        u.setPassword(changePassData.getNewPassword());
         userRepository.save(u);
         return mapper.map(u, UserWithoutPassDTO.class);
     }

@@ -28,10 +28,10 @@ public class User {
     private Integer id;
 
     @Column(name = "first_name", nullable = false)
-    private String first_name;
+    private String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String last_name;
+    private String lastName;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -40,19 +40,19 @@ public class User {
     private String email;
 
     @Column(name = "phone_number")
-    private String phone_number;
+    private String phoneNumber;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate date_of_birth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "profile_photo")
-    private String profile_photo;
+    private String profilePhoto;
 
     @Column(name = "is_verified")
-    private Boolean is_verified;
+    private Boolean isVerified;
 
     @Column(name = "additional_info")
-    private String additional_info;
+    private String additionalInfo;
 
     @Column(name = "gender")
     private String gender;
@@ -62,7 +62,7 @@ public class User {
     //private LocalDateTime dateAdded;
 
     @Column(name = "verification_code")
-    private String verification_code;
+    private String verificationCode;
 
 
 
