@@ -5,6 +5,7 @@ import com.example.travelleronline.model.DTOs.User.LoginDTO;
 import com.example.travelleronline.model.DTOs.User.RegisterDTO;
 import com.example.travelleronline.model.DTOs.User.UserWithoutPassDTO;
 import com.example.travelleronline.model.entities.User;
+import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.model.repositories.UserRepository;
 import com.example.travelleronline.service.UserService;
@@ -34,13 +35,20 @@ public class UserController extends AbstractController{
     public UserWithoutPassDTO getById(@PathVariable int id){
         return userService.getById(id);
     }
-    @PutMapping
+    @PutMapping("/userpass")
     public UserWithoutPassDTO changePass(@RequestBody ChangePassDTO changePassData, HttpSession s){
-        boolean logged=(boolean) s.getAttribute("LOGGED");
+        boolean logged;
+        if(s.getAttribute("LOGGED")==null){
+            logged=false;
+        }else{
+            logged =(boolean) s.getAttribute("LOGGED");
+        }
         if(!logged){
             throw new UnauthorizedException("You have to Login");
         }
-        return userService.changePass(changePassData);
+
+        //throw new NotFoundException("Testing");
+         return userService.changePass(changePassData, (Integer) s.getAttribute("LOGGED_ID"));
     }
 
 

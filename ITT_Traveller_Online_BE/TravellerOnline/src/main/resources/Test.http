@@ -1,6 +1,10 @@
 GET localhost:3333/users/1
 ###
 
+GET localhost:3333/test
+
+###
+
 POST localhost:3333/users
 Content-Type: application/json
 
