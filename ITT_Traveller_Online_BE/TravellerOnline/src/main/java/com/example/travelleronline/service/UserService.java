@@ -66,7 +66,7 @@ public class UserService {
 
     public UserWithoutPassDTO changePass(ChangePassDTO changePassData,int id){
         User u=userRepository.findById(id);
-        u.setPassword(changePassData.getNewPassword());
+        u.setPassword(validator.encodePassword(changePassData.getNewPassword()));
         userRepository.save(u);
         return mapper.map(u, UserWithoutPassDTO.class);
     }

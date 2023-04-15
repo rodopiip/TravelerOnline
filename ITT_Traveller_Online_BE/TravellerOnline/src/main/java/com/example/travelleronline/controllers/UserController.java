@@ -4,16 +4,12 @@ import com.example.travelleronline.model.DTOs.User.ChangePassDTO;
 import com.example.travelleronline.model.DTOs.User.LoginDTO;
 import com.example.travelleronline.model.DTOs.User.RegisterDTO;
 import com.example.travelleronline.model.DTOs.User.UserWithoutPassDTO;
-import com.example.travelleronline.model.entities.User;
-import com.example.travelleronline.model.exceptions.NotFoundException;
+import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
-import com.example.travelleronline.model.repositories.UserRepository;
 import com.example.travelleronline.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 @RestController
 public class UserController extends AbstractController{
@@ -45,6 +41,9 @@ public class UserController extends AbstractController{
         }
         if(!logged){
             throw new UnauthorizedException("You have to Login");
+        }
+        if (!changePassData.getNewPassword().equals(changePassData.getConfirmNewPassword())){
+            throw new BadRequestException("Confirm new pass must match new password.");
         }
 
         //throw new NotFoundException("Testing");
