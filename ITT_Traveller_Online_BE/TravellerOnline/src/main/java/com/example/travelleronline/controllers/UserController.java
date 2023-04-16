@@ -8,6 +8,7 @@ import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
+import com.example.travelleronline.service.SessionService;
 import com.example.travelleronline.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ import java.util.Optional;
 public class UserController extends AbstractController{
     @Autowired
     private UserService userService;
+
+    public static int getId(HttpSession s) {
+        return 0;
+    }
 
     @PostMapping("/users/auth")
     public UserWithoutPassDTO login(@RequestBody LoginDTO loginData,HttpSession s){
@@ -42,7 +47,7 @@ public class UserController extends AbstractController{
 
     @PutMapping("/userpass")
     public UserWithoutPassDTO changePass(@RequestBody ChangePassDTO changePassData, HttpSession s){
-        isLogged(s);
+        SessionService.isLogged(s);
         int id=(Integer) s.getAttribute("LOGGED_ID");
         userService.checkPassword(changePassData,id);
         if (!changePassData.getNewPassword().
@@ -64,43 +69,24 @@ public class UserController extends AbstractController{
 
     @DeleteMapping("/users")
     public UserWithoutPassDTO deleteUserBySessionUserId(HttpSession s) {
-        isLogged(s);
-//        int id=(Integer) s.getAttribute("LOGGED_ID");
-        int id = getUserId(s);
+        SessionService.isLogged(s);
+        int id = SessionService.getUserId(s);
         UserWithoutPassDTO u=userService.getById(id);
         userService.deleteUserById(id);
         return u;
     }
 
-
-
     //ToDo: Move this business logic somewhere else (prob. ValidatorService.)
 
     @PutMapping("/users")
     public UserWithoutPassDTO updateUser(@RequestBody UserWithoutPassDTO userUpdateDTO,HttpSession s) {
-        isLogged(s);
+        SessionService.isLogged(s);
         userUpdateDTO = userService.updateUser(userUpdateDTO,
-                                                    getUserId(s));
+                SessionService.getUserId(s));
         return userUpdateDTO;
     }
 
-    public static boolean checkOwner(HttpSession s,int ownerId){
-        if(getId(s)==ownerId) return true;
-        else{
-            throw new UnauthorizedException("You need to be the owner.");
-        }
-    }
 
-    public static int getUserId(HttpSession s){
-        return (Integer) s.getAttribute("LOGGED_ID");
-    }
-    public static boolean isLogged(HttpSession s){
-        Optional<Boolean> id=Optional.ofNullable((Boolean) s.getAttribute("LOGGED"));
-        if(id.isPresent()){
-            return true;
-        }
-        throw new UnauthorizedException("You have to Login");
-    }
 
 
 

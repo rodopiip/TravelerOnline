@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PostService {
     @Autowired
@@ -23,6 +25,25 @@ public class PostService {
         Post p = mapper.map(newPost, Post.class);
         postRepository.save(p);
         return mapper.map(p, PostInfoDTO.class);
+    }
+
+    public PostInfoDTO getPostById(int id) {
+        return null;
+    }
+
+    public List<PostInfoDTO> getUserPosts(int userId) {
+        return null;
+    }
+
+    public List<PostInfoDTO> getPosts() {
+        return null;
+    }
+
+    public PostInfoDTO updatePost(int postId, PostInfoDTO postInfoDTO) {
+        return null;
+    }
+
+    public void deletePost(int id) {
     }
     //add video to post
     //delete post

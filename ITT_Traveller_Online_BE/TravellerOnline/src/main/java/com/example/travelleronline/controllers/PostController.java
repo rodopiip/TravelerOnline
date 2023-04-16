@@ -2,6 +2,7 @@ package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.service.PostService;
+import com.example.travelleronline.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class PostController extends AbstractController{
     //get posts by user_id - localhost:3333/users/posts
     @GetMapping("/users/{user-id}/posts")
     public List<PostInfoDTO> getUserPosts(HttpSession s){
-        int userId = UserController.getUserId(s);//todo REFACTOR
+        int userId = SessionService.getUserId(s);//todo REFACTOR
         return postService.getUserPosts(userId);//todo service
     }
 
@@ -57,7 +58,7 @@ public class PostController extends AbstractController{
     }
 
     //delete post - localhost:3333/posts/{postId}
-    @DeleteMapping("/posts/{postId")
+    @DeleteMapping("/posts/{postId}")
     public void deletePost(@PathVariable("postId") int id){
         postService.deletePost(id);//todo service
     }

@@ -74,7 +74,7 @@ public class CommentService {
 
     public Comment deleteById(int id, HttpSession s) {
         Comment toBeDeleted=findById(id);
-        UserController.checkOwner(s,toBeDeleted.getUserId());
+        SessionService.checkOwner(s,toBeDeleted.getUserId());
 
         deleteSubComments(toBeDeleted.getId());
         commentRepository.delete(toBeDeleted);

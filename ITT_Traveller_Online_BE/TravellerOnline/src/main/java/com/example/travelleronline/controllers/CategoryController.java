@@ -1,8 +1,11 @@
 package com.example.travelleronline.controllers;
 
+import com.example.travelleronline.model.DTOs.category.CategoryDTO;
 import com.example.travelleronline.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("localhost:3333/categories")
@@ -36,4 +39,5 @@ public class CategoryController extends AbstractController{
     @DeleteMapping("/{categoryId}")
     public void deleteCategory(@PathVariable("categoryId") int categoryId) {
         categoryService.deleteCategory(categoryId);//todo
+    }
 }

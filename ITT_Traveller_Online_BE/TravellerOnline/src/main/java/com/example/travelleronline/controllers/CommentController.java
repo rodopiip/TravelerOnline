@@ -5,6 +5,7 @@ import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.BadSaveToDBException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.service.CommentService;
+import com.example.travelleronline.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,19 +19,19 @@ public class CommentController {
 
     @PostMapping("/posts/{id}/comments")
     public Comment commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession s) {
-        UserController.isLogged(s);
+        SessionService.isLogged(s);
         int userId=UserController.getId(s);
         return commentService.saveByPost(userId,contentData,postId);
     }
     @PostMapping("/comments/{id}/comments")
     public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession s) {
-        UserController.isLogged(s);
+        SessionService.isLogged(s);
         int userId=UserController.getId(s);
         return commentService.saveByComment(userId,contentData,commentId);
     }
     @DeleteMapping("/comments/{id}")
     public void deleteUserBySessionUserId(HttpSession s,@PathVariable("id") int commentId) {
-        UserController.isLogged(s);
+        SessionService.isLogged(s);
         System.out.println("Entering:"+commentId);
         commentService.deleteById(commentId,s);
         return ;
@@ -62,7 +63,7 @@ public class CommentController {
 
     @GetMapping("/comments")
     public List<Comment> getAllCommentsOfUser(HttpSession s) {
-        UserController.isLogged(s);
+        SessionService.isLogged(s);
         return commentService.getAllCommentOfUser(UserController.getId(s));
     }
 
