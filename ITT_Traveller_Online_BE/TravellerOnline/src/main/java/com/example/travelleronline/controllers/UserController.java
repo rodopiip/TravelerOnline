@@ -88,18 +88,6 @@ public class UserController extends AbstractController{
             return true;
         }
         throw new UnauthorizedException("You have to Login");
-        /*
-        boolean logged;
-        if(s.getAttribute("LOGGED")==null){
-            logged=false;
-        }else{
-            logged =(boolean) s.getAttribute("LOGGED");
-        }
-        if(!logged){
-            throw new UnauthorizedException("You have to Login");
-        }
-        return true;
-         */
     }
 
 

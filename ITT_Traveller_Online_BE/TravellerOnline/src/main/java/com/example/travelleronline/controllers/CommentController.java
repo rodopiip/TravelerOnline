@@ -16,6 +16,7 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    /*
     @GetMapping("/post/{id}/comments")
     public ResponseEntity<List<Comment>> getAllCommentsOfPost(@PathVariable("id") int id, HttpSession s) {
         UserController.isLogged(s);
@@ -44,7 +45,7 @@ public class CommentController {
     }
     */
 
-
+/*
     @GetMapping("/post/{id}/comments")
     public ResponseEntity<List<Comment>> getAllCommentsOfComment(@PathVariable("id") int id) {
         //todo: postId
@@ -82,4 +83,6 @@ public class CommentController {
         commentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+ */
 }
