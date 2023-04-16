@@ -79,10 +79,10 @@ public class UserController extends AbstractController{
     }
 
 
-    private int getId(HttpSession s){
+    public static int getId(HttpSession s){
         return (Integer) s.getAttribute("LOGGED_ID");
     }
-    private boolean isLogged(HttpSession s){
+    public static boolean isLogged(HttpSession s){
         Optional<Boolean> id=Optional.ofNullable((Boolean) s.getAttribute("LOGGED"));
         if(id.isPresent()){
             return true;
