@@ -77,35 +77,4 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
     */
-
-/*
-
-
-
-
-    @PostMapping("/comments")
-    public Comment createComment(@RequestBody Comment comment) {
-        //todo: logged in
-        Comment savedComment = commentService.save(comment);
-        return savedComment;
-    }
-
-    @PutMapping("/comments/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable("id") Integer id, @RequestBody Comment comment) {
-        //todo: check if you're logged in
-        Comment updatedComment = commentService.update(id, comment);
-        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("id") Integer id) {
-        //todo: Check if the owner is the one deleting
-        //todo: can only delte if you are logged in
-
-        commentService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-
- */
 }
