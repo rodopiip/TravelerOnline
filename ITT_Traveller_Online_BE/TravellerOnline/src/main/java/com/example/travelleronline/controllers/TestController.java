@@ -18,14 +18,14 @@ public class TestController {
 
         String emailValid="Test@abv.bg";
         String emailInValid="aADszaAq!0394";
-        System.out.println(emailInValid+" : "+validator.IsValidEmail(emailInValid));
+        System.out.println(emailInValid+" : "+validator.isValidEmail(emailInValid));
 
-        System.out.println(emailValid+" : "+validator.IsValidEmail(emailValid));
+        System.out.println(emailValid+" : "+validator.isValidEmail(emailValid));
 
         String password="151232RFsAsx!";
         String encodedPassword=validator.encodePassword(password);
 
-        System.out.println("Testing:"+password+" to "+encodedPassword+"\n:"+validator.isValidPassword(password,encodedPassword));
+        System.out.println("Testing:"+password+" to "+encodedPassword+"\n:"+validator.isCorrectPassword(password,encodedPassword));
 
         throw new UnauthorizedException("Testing Done, Check console.");
 

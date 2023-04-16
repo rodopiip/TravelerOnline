@@ -14,8 +14,10 @@ public class UserWithoutPassDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String dateOfBirth;
     private String phoneNumber;
     private String profilePhoto;
     private boolean isVerified;
+    private String additionalInfo;
     private String gender;
 }
