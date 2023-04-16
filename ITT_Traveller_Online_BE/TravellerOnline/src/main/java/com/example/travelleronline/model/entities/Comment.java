@@ -23,38 +23,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Setter
+@Data //equals(), hashCode() and toString();
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
+
+    @Column(name = "content", nullable = false, length = 255)
     private String content;
 
-    @Column(name = "rating", nullable = false)
-    private Integer rating;
+    @Column(name = "post_id")
+    private Integer postId;
 
-    @Column(name = "date_added", nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(name = "super_comment_id")
+    private Integer superCommentId;
+
+    @Column(name = "rating", nullable = false)
+    @Builder.Default
+    private Integer rating = 0;
+
+    @Column(name = "date_added", nullable = false)
     private LocalDateTime dateAdded;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
-    private Post post;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "super_comment_id", referencedColumnName = "id")
-    private Comment superComment;
-
-    @OneToMany(mappedBy = "superComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> replies;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Reaction> reactions;
-
-    //getters and setters
 }

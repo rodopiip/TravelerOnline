@@ -1,4 +1,5 @@
 package com.example.travelleronline.service;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,22 @@ public class ValidationService {
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
 
 
-    public boolean isValidEmail(String email){
+
+    public static boolean isValidEmail(String email){
         Matcher matcher = EMAIL_PATTERN.matcher(email);
         return matcher.matches();
     }
-    public boolean isValidNumber(String phone){
+    public static boolean isValidNumber(String phone){
         Matcher matcher = PHONE_PATTERN.matcher(phone);
         return matcher.matches();
     }
-    public boolean isCorrectPassword(String rawPassword, String encodedPassword){
+    public static boolean isCorrectPassword(String rawPassword, String encodedPassword){
         return encoder.matches(rawPassword,encodedPassword);
     }
-    public String encodePassword(String password){
+    public static String encodePassword(String password){
         return encoder.encode(password);
     }
+
 
 
 

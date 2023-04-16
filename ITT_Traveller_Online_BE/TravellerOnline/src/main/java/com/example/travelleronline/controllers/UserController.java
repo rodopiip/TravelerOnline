@@ -72,6 +72,10 @@ public class UserController extends AbstractController{
         return u;
     }
 
+
+
+    //ToDo: Move this business logic somewhere else (prob. ValidatorService.)
+
     @PutMapping("/users")
     public UserWithoutPassDTO updateUser(@RequestBody UserWithoutPassDTO userUpdateDTO,HttpSession s) {
         isLogged(s);
@@ -80,6 +84,12 @@ public class UserController extends AbstractController{
         return userUpdateDTO;
     }
 
+    public static boolean checkOwner(HttpSession s,int ownerId){
+        if(getId(s)==ownerId) return true;
+        else{
+            throw new UnauthorizedException("You need to be the owner.");
+        }
+    }
 
     public static int getUserId(HttpSession s){
         return (Integer) s.getAttribute("LOGGED_ID");
