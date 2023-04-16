@@ -11,4 +11,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     method implementation based on method names:
     runtime query derivation from method names
      */
+
 }
