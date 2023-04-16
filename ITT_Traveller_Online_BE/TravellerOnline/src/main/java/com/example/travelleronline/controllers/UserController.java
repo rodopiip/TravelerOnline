@@ -53,8 +53,8 @@ public class UserController extends AbstractController{
          return userService.changePass(changePassData,id);
     }
 
-    /*Hey buddy, i'm sure you would argue that this request should be a get request. However, i'm uncertain
-     of how much different criterias there should be for the SEARCH, so i'm using a POST, and getting the Request Body
+    /*Hey buddy, i'm sure you would argue that this request should be a GET request. However, i'm uncertain
+     of how much different criteria there should be for the SEARCH, so i'm using a POST, and getting the Request Body
      for the parameters, instead of putting all of them into the url link*/
     @PostMapping("/users/search")
     public ResponseEntity<List<User>> searchUsers(@RequestBody SearchUDTO criteria) {
@@ -65,7 +65,8 @@ public class UserController extends AbstractController{
     @DeleteMapping("/users")
     public UserWithoutPassDTO deleteUserBySessionUserId(HttpSession s) {
         isLogged(s);
-        int id=(Integer) s.getAttribute("LOGGED_ID");
+//        int id=(Integer) s.getAttribute("LOGGED_ID");
+        int id = getId(s);
         UserWithoutPassDTO u=userService.getById(id);
         userService.deleteUserById(id);
         return u;
@@ -78,7 +79,8 @@ public class UserController extends AbstractController{
     @PutMapping("/users")
     public UserWithoutPassDTO updateUser(@RequestBody UserWithoutPassDTO userUpdateDTO,HttpSession s) {
         isLogged(s);
-        userUpdateDTO = userService.updateUser(userUpdateDTO,getId(s));
+        userUpdateDTO = userService.updateUser(userUpdateDTO,
+                                                    getId(s));
         return userUpdateDTO;
     }
 

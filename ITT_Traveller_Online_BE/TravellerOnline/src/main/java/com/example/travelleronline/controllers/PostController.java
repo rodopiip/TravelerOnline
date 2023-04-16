@@ -18,4 +18,6 @@ public class PostController extends AbstractController{
     public PostInfoDTO addPost(@RequestBody NewPostDTO newPostDTO){
         return postService.addPost(newPostDTO);
     }
+
+
 }
