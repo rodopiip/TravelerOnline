@@ -2,6 +2,7 @@ package com.example.travelleronline.model.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -44,8 +45,4 @@ public class Post {
     @Column(name = "date_created", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime dateCreated;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images;
-
-    //getters and setters
 }

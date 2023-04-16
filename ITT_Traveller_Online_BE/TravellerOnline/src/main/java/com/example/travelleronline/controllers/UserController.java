@@ -66,7 +66,7 @@ public class UserController extends AbstractController{
     public UserWithoutPassDTO deleteUserBySessionUserId(HttpSession s) {
         isLogged(s);
 //        int id=(Integer) s.getAttribute("LOGGED_ID");
-        int id = getId(s);
+        int id = getUserId(s);
         UserWithoutPassDTO u=userService.getById(id);
         userService.deleteUserById(id);
         return u;
@@ -76,12 +76,12 @@ public class UserController extends AbstractController{
     public UserWithoutPassDTO updateUser(@RequestBody UserWithoutPassDTO userUpdateDTO,HttpSession s) {
         isLogged(s);
         userUpdateDTO = userService.updateUser(userUpdateDTO,
-                                                    getId(s));
+                                                    getUserId(s));
         return userUpdateDTO;
     }
 
 
-    public static int getId(HttpSession s){
+    public static int getUserId(HttpSession s){
         return (Integer) s.getAttribute("LOGGED_ID");
     }
     public static boolean isLogged(HttpSession s){

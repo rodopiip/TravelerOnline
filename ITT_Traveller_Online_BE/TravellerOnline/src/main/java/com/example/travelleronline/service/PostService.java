@@ -1,6 +1,5 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.DTOs.post.NewPostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.repositories.PostRepository;
@@ -14,10 +13,18 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private ModelMapper mapper;
-    public PostInfoDTO addPost(NewPostDTO newPost){
+
+    //get post by post_id
+    //get posts by user_id
+    //get all posts
+    //add post
+    public PostInfoDTO addPost(PostInfoDTO newPost){//todo after service
         //validation with if statements for now
         Post p = mapper.map(newPost, Post.class);
         postRepository.save(p);
         return mapper.map(p, PostInfoDTO.class);
     }
+    //add video to post
+    //delete post
+    //update post
 }
