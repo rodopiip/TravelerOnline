@@ -49,6 +49,4 @@ public class Comment {
     @Column(name = "date_added", nullable = false)
     private LocalDateTime dateAdded;
 
-    //todo: LIST OF ALL SUB COMMENTS
-
 }
