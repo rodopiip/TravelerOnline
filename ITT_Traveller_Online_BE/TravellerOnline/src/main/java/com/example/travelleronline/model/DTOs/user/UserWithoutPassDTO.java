@@ -13,7 +13,8 @@ public class UserWithoutPassDTO {
 
     /*
     DTO without lists:
-    prevention of recursive list invocation
+    prevention of circular list invocation
+    (circular reference) : composition both ways
      */
     private int id;
     private String firstName;

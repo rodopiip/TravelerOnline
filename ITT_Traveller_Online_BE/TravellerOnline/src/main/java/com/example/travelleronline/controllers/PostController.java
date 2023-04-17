@@ -1,5 +1,6 @@
 package com.example.travelleronline.controllers;
 
+import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.service.PostService;
 import com.example.travelleronline.service.SessionService;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,8 +42,13 @@ public class PostController extends AbstractController{
 
     //add post - localhost:3333/posts
     @PostMapping("/posts")
-    public PostInfoDTO addPost(@RequestBody PostInfoDTO postInfoDTO){
-        return postService.addPost(postInfoDTO);
+    public PostInfoDTO addPost(@RequestBody CreatePostDTO postInfoWithoutOwnerDTO,
+                               HttpSession s,
+                               @RequestBody List<MultipartFile> images,
+                               @RequestBody MultipartFile video){
+        //get user id from session todo
+        return postService.addPost(postInfoWithoutOwnerDTO, getLoggedId(s));//question: are media files needed?
+
     }
 
     //add video to post - localhost:3333/posts/{postId}/upload-video

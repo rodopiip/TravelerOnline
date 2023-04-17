@@ -37,5 +37,14 @@ public class ValidationService {
         return encoder.encode(password);
     }
 
-    //validation for images (check if images exist) todo
+    //validate post info
+
+    /*
+    title is smaller than 5 symbols -> Bad request : msg "title is mandatory"
+    description is smaller than 5 symbols -> Bad request : msg "bad request message"
+    title and description have to be not null (mandatory field) -> Bad request : msg "bad request message"
+    validation for images (check if images exist) todo
+     */
+
+
 }
