@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 //Maybe make it Singelton insteed of service?
 @Service
-public class ValidationService {
+public class ValidationService extends AbstractService{
 
     private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class UsersSavePostsController {
 
-    @Autowired
-    private UserSavePostService userSavePostService;//todo create service
+    //@Autowired
+    //private UserSavePostService userSavePostService;//todo create service
 
     //get saved posts by user - localhost:3333/users/saved-posts
     //todo

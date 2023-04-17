@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CategoryService {
+public class CategoryService extends AbstractService{
     public List<CategoryDTO> getAllCategories() {
         return null;
     }

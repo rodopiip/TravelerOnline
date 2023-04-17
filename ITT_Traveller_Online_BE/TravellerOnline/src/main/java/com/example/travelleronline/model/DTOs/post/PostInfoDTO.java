@@ -1,6 +1,9 @@
 package com.example.travelleronline.model.DTOs.post;
 
+<<<<<<< HEAD
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
+=======
+>>>>>>> master
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +16,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostInfoDTO {
     private Integer id;//ok
+<<<<<<< HEAD
     private UserWithoutPassDTO owner;
+=======
+    //user id from session
+    //private Integer userId;//question: Integer userId OR User user?
+>>>>>>> master
     private String title;//ok
     private String description;//ok
     private String location;//ok : question: make a separate Location object? no.

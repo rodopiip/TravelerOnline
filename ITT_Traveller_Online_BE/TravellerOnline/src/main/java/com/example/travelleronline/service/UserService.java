@@ -9,9 +9,9 @@ import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.repositories.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,28 +21,25 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class UserService {
+public class UserService extends AbstractService{
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ModelMapper mapper;
     @Autowired
     private ValidationService validator;
 
     //BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
 
     public UserWithoutPassDTO login(LoginDTO loginData){
-        User u=userRepository.findByEmail(loginData.getEmail());
-        if(u==null) throw new BadRequestException("No account with that email found");
-        //System.out.println(u.getPassword());
+        Optional<User> opt= Optional.ofNullable(userRepository.findByEmail(loginData.getEmail()).orElseThrow(() -> new BadRequestException("No account with that email found")));
+        User u=opt.get();
         if(!validator.isCorrectPassword(loginData.getPassword(), u.getPassword())) throw new BadRequestException("Incorrect password");
 
         return mapper.map(u, UserWithoutPassDTO.class);
     }
     public boolean checkPassword(ChangePassDTO changeData,int id){
         //might as well be void though
-        User u=userRepository.findById(id);
+        User u=Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();
         if(!validator.isCorrectPassword(changeData.getOldPassword(), u.getPassword())) throw new BadRequestException("Incorrect password");
         return true;
     }
@@ -70,15 +67,23 @@ public class UserService {
     }
 
     public UserWithoutPassDTO getById(int id) {
-        User u=userRepository.findById(id);
-        if(u==null){
-            throw new NotFoundException("User cannot be found");
-        }
+        User u=Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();;
         return mapper.map(u,UserWithoutPassDTO.class);
     }
 
-    public UserWithoutPassDTO changePass(ChangePassDTO changePassData,int id){
-        User u=userRepository.findById(id);
+    public UserWithoutPassDTO changePass(ChangePassDTO changePassData, HttpSession session){
+        isLogged(session);
+        int id=getUserId(session);
+        checkPassword(changePassData,id);
+        if (!changePassData.getNewPassword().
+                equals(
+                        changePassData.getConfirmNewPassword())){
+            throw new BadRequestException("Confirm new pass must match new password.");
+        }
+
+
+
+        User u=Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();;
         u.setPassword(validator.encodePassword(changePassData.getNewPassword()));
         userRepository.save(u);
         return mapper.map(u, UserWithoutPassDTO.class);
@@ -101,16 +106,19 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteUserById(int id) {
+    public UserWithoutPassDTO deleteUserById(HttpSession session) {
+        isLogged(session);
+        int id = getUserId(session);
+        UserWithoutPassDTO u=getById(id);
         userRepository.deleteById(id);
+        return u;
     }
 
-    public UserWithoutPassDTO updateUser(UserWithoutPassDTO updateData, int id) {
-        Optional<User> optUser= Optional.ofNullable(userRepository.findById(id));
-        if (!optUser.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
-        User u = optUser.get();
+    public UserWithoutPassDTO updateUser(UserWithoutPassDTO updateData, HttpSession session) {
+        isLogged(session);
+        int id=getUserId(session);
+
+        User u = Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();;
         u.setFirstName(updateData.getFirstName());
         u.setLastName(updateData.getLastName());
         if(validator.isValidEmail(updateData.getEmail())){
@@ -126,6 +134,22 @@ public class UserService {
         u.setGender(updateData.getGender());
         userRepository.save(u);
         return mapper.map(u,UserWithoutPassDTO.class);
+    }
+
+    public int subscribe(HttpSession session, int subscribedToId){
+        isLogged(session);
+        int userId=getUserId(session);
+        if(userId==subscribedToId){
+            throw new BadRequestException("You cannot subscribe to yourself");
+        }
+
+        User subscriber = Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No account found"))).get();;
+        User subscribedTo = Optional.ofNullable(userRepository.findById(subscribedToId).orElseThrow(()->new BadRequestException("No user found"))).get();;
+
+
+        subscribedTo.getSubscribers().add(subscriber);
+        userRepository.save(subscribedTo);
+        return subscribedTo.getSubscribers().size();
     }
     //ne se raboti sys sesii,response ili request
 

@@ -3,7 +3,6 @@ package com.example.travelleronline.controllers;
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.service.PostService;
-import com.example.travelleronline.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,7 @@ public class PostController extends AbstractController{
     //get posts by user_id - localhost:3333/users/posts
     @GetMapping("/users/{user-id}/posts")
     public List<PostInfoDTO> getUserPosts(HttpSession s){
-        int userId = SessionService.getUserId(s);//todo REFACTOR
-        return postService.getUserPosts(userId);//todo service
+        return postService.getUserPosts(s);//todo service
     }
 
     //get all posts - localhost:3333/posts
@@ -42,6 +40,7 @@ public class PostController extends AbstractController{
 
     //add post - localhost:3333/posts
     @PostMapping("/posts")
+<<<<<<< HEAD
     public PostInfoDTO addPost(@RequestBody CreatePostDTO postInfoWithoutOwnerDTO,
                                HttpSession s,
                                @RequestBody List<MultipartFile> images,
@@ -49,6 +48,10 @@ public class PostController extends AbstractController{
         //get user id from session todo
         return postService.addPost(postInfoWithoutOwnerDTO, getLoggedId(s));//question: are media files needed?
 
+=======
+    public void/*PostInfoDTO*/ addPost(@RequestBody PostInfoDTO postInfoDTO){
+        //return postService.addPost(postInfoDTO);
+>>>>>>> master
     }
 
     //add video to post - localhost:3333/posts/{postId}/upload-video

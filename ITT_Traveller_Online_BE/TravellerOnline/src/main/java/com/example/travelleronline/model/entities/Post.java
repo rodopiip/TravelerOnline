@@ -45,5 +45,5 @@ public class Post {
     @Column(name = "date_created", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime dateCreated;
 
-    private List<Image> images;
+    //private List<Image> images;
 }
