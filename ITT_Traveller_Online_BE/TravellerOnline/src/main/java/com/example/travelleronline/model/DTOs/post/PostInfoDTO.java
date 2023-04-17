@@ -6,14 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+//refactor: use record instead of pojo?
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostInfoDTO {
     private Integer id;//ok
-    private Integer userId;//question: Integer userId OR User user?
+
+    //user id from session
+    //private Integer userId;//question: Integer userId OR User user?
     private String title;//ok
     private String description;//ok
     private String location;//ok : question: make a separate Location object?

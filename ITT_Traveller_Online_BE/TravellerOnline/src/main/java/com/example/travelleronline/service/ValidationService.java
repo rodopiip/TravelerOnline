@@ -17,7 +17,10 @@ public class ValidationService {
     private static final String PHONE_REGEX = "^\\+359\\s(?:2[0-9]|3[2-9]|[4-9][2-9])\\-\\d{3}\\-\\d{4}$";
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
 
-
+    /*
+    validation methods.
+    If return value is false -> throw custom exception
+     */
 
     public static boolean isValidEmail(String email){
         Matcher matcher = EMAIL_PATTERN.matcher(email);
@@ -34,7 +37,5 @@ public class ValidationService {
         return encoder.encode(password);
     }
 
-
-
-
+    //validation for images (check if images exist) todo
 }

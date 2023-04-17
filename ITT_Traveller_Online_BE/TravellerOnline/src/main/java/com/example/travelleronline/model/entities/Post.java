@@ -33,7 +33,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User user;
+    private User owner;//todo
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
@@ -45,4 +45,5 @@ public class Post {
     @Column(name = "date_created", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime dateCreated;
 
+    private List<Image> images;
 }

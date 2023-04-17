@@ -21,6 +21,4 @@ public class UserSavePost {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     private Post post;
-
-    //getters and setters
 }

@@ -64,6 +64,14 @@ public class User {
     @Column(name = "verification_code")
     private String verificationCode;
 
+    //list<Post>//created posts
+    //DILEMA
+    @OneToMany(mappedBy = "owner")//map list by exact column name in db
+    private List<Post> posts;
+    //list<Post>//saved posts
+    //list<UserWithoutPasswordDTO>//subscribedToList
+    //list<UserWithoutPasswordDTO>//subscribersList
+
 
 
     /*

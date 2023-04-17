@@ -10,6 +10,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserWithoutPassDTO {
+
+    /*
+    DTO without lists:
+    prevention of recursive list invocation
+     */
     private int id;
     private String firstName;
     private String lastName;

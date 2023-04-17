@@ -86,7 +86,16 @@ public class UserController extends AbstractController{
         return userUpdateDTO;
     }
 
+    //USER-POST MAPPINGS
 
+    //get saved posts by user - localhost:3333/users/saved-posts
+    //todo
+
+    //add saved post - localhost:3333/users/saved-posts
+    //todo
+
+    //delete saved post - localhost:3333/users/saved-posts/{postId}
+    //todo
 
 
 
