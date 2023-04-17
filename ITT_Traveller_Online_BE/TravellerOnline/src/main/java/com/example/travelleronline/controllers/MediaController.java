@@ -19,17 +19,13 @@ public class MediaController {
     private MediaService mediaService;
 
     @PostMapping("/user/media")
-    public UserWithoutPassDTO uploadImage(@RequestParam("file")MultipartFile file, HttpSession session){
+    public UserWithoutPassDTO uploadProfilePic(@RequestParam("file")MultipartFile file, HttpSession session){
         SessionService.isLogged(session);
         return mediaService.changeProfilePic(file,session);
     }
-    //method to upload image to post and video to post
-    public void uploadVideo(){
-        return;
-    }
     @SneakyThrows
     @GetMapping("/media/{filename}")
-    public void downloadImage(@PathVariable("filename") String fileName, HttpServletResponse response){
+    public void downloadMedia(@PathVariable("filename") String fileName, HttpServletResponse response){
         File img=mediaService.downloadMedia(fileName);
         Files.copy(img.toPath(),response.getOutputStream());
         return;
