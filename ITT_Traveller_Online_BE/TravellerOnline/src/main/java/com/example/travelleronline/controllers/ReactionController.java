@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public class ReactionController {
+public class ReactionController extends AbstractController {
     @Autowired
     private ReactionService reactionService;//todo
 
@@ -21,6 +21,6 @@ public class ReactionController {
                              HttpSession session){
         int userId=0;//todo:
         ReactionDTO reactionDTO = new ReactionDTO(null, userId, status, postId, null);//todo ReactionDTO
-        return reactionService.react(reactionDTO,session);//todo
+        return reactionService.react(reactionDTO,getLoggedId(session));//todo
     }
 }

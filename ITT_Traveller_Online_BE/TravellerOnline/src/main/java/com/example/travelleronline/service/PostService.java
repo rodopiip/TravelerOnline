@@ -4,14 +4,8 @@ import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
-import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.repositories.PostRepository;
-<<<<<<< HEAD
 import com.example.travelleronline.model.repositories.UserRepository;
-=======
-import jakarta.servlet.http.HttpSession;
->>>>>>> master
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,14 +18,6 @@ public class PostService extends AbstractService{
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;//data base
-<<<<<<< HEAD
-    @Autowired
-    private ModelMapper mapper;//Entity <-> DTO
-
-    @Autowired
-    private ValidationService validator;
-=======
->>>>>>> master
 
     //add post
     public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
@@ -47,6 +33,7 @@ public class PostService extends AbstractService{
 
         //1.1
         //get object from newPostDTO object
+        /*
         if (!validator.methodName1(object)){
             throw new BadRequestException("Title should be at least one symbol long.");//todo
         }
@@ -68,7 +55,7 @@ public class PostService extends AbstractService{
         if (!validator.methodName4(object)){
             throw new BadRequestException("insert appropriate message..");//todo
         }
-
+        */
         //2. get logged user
 
         //todo for Pesho: findBy(int id) need to return Optional<User> for
@@ -96,16 +83,8 @@ public class PostService extends AbstractService{
 
         //upload single video
         //save
-<<<<<<< HEAD
         MediaService.upload();//insert parameters into upload method
          */
-
-=======
-        //MediaService.upload();//insert parameters into upload method
-        Post p = mapper.map(newPost, Post.class);
-        postRepository.save(p);
-        return mapper.map(p, PostInfoDTO.class);
->>>>>>> master
     }
 
     //get post by post_id
@@ -114,8 +93,7 @@ public class PostService extends AbstractService{
     }
 
     //get posts by user_id
-    public List<PostInfoDTO> getUserPosts(HttpSession session) {
-        int userId = getUserId(session);
+    public List<PostInfoDTO> getUserPosts(int userID) {
         return null;
     }
 

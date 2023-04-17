@@ -7,10 +7,7 @@ import com.example.travelleronline.model.DTOs.user.RegisterDTO;
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
-import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.repositories.UserRepository;
-import jakarta.servlet.http.HttpSession;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +34,6 @@ public class UserService extends AbstractService{
 
         return mapper.map(u, UserWithoutPassDTO.class);
     }
-    public boolean checkPassword(ChangePassDTO changeData,int id){
-        //might as well be void though
-        User u=Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();
-        if(!validator.isCorrectPassword(changeData.getOldPassword(), u.getPassword())) throw new BadRequestException("Incorrect password");
-        return true;
-    }
 
     public UserWithoutPassDTO register(RegisterDTO regData) {
         String email= regData.getEmail();
@@ -66,24 +57,14 @@ public class UserService extends AbstractService{
         return mapper.map(u,UserWithoutPassDTO.class);
     }
 
-    public UserWithoutPassDTO getById(int id) {
-        User u=Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();;
-        return mapper.map(u,UserWithoutPassDTO.class);
-    }
-
-    public UserWithoutPassDTO changePass(ChangePassDTO changePassData, HttpSession session){
-        isLogged(session);
-        int id=getUserId(session);
-        checkPassword(changePassData,id);
+    public UserWithoutPassDTO changePass(ChangePassDTO changePassData, int userId){
+        checkPassword(changePassData,userId);
         if (!changePassData.getNewPassword().
                 equals(
                         changePassData.getConfirmNewPassword())){
             throw new BadRequestException("Confirm new pass must match new password.");
         }
-
-
-
-        User u=Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();;
+        User u=Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No account found"))).get();;
         u.setPassword(validator.encodePassword(changePassData.getNewPassword()));
         userRepository.save(u);
         return mapper.map(u, UserWithoutPassDTO.class);
@@ -106,19 +87,14 @@ public class UserService extends AbstractService{
                 .collect(Collectors.toList());
     }
 
-    public UserWithoutPassDTO deleteUserById(HttpSession session) {
-        isLogged(session);
-        int id = getUserId(session);
-        UserWithoutPassDTO u=getById(id);
-        userRepository.deleteById(id);
-        return u;
+    public UserWithoutPassDTO deleteUserById(int userId) {
+        User u=userRepository.findById(userId).get();
+        userRepository.deleteById(userId);
+        return mapper.map(u,UserWithoutPassDTO.class);
     }
 
-    public UserWithoutPassDTO updateUser(UserWithoutPassDTO updateData, HttpSession session) {
-        isLogged(session);
-        int id=getUserId(session);
-
-        User u = Optional.ofNullable(userRepository.findById(id).orElseThrow(()->new BadRequestException("No account found"))).get();;
+    public UserWithoutPassDTO updateUser(UserWithoutPassDTO updateData, int userId) {
+        User u = Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No account found"))).get();;
         u.setFirstName(updateData.getFirstName());
         u.setLastName(updateData.getLastName());
         if(validator.isValidEmail(updateData.getEmail())){
@@ -136,14 +112,12 @@ public class UserService extends AbstractService{
         return mapper.map(u,UserWithoutPassDTO.class);
     }
 
-    public int subscribe(HttpSession session, int subscribedToId){
-        isLogged(session);
-        int userId=getUserId(session);
-        if(userId==subscribedToId){
+    public int subscribe(int subscriberId, int subscribedToId){
+        if(subscriberId==subscribedToId){
             throw new BadRequestException("You cannot subscribe to yourself");
         }
 
-        User subscriber = Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No account found"))).get();;
+        User subscriber = Optional.ofNullable(userRepository.findById(subscriberId).orElseThrow(()->new BadRequestException("No account found"))).get();;
         User subscribedTo = Optional.ofNullable(userRepository.findById(subscribedToId).orElseThrow(()->new BadRequestException("No user found"))).get();;
 
 
@@ -153,4 +127,17 @@ public class UserService extends AbstractService{
     }
     //ne se raboti sys sesii,response ili request
 
+    private boolean checkPassword(ChangePassDTO changeData,int userId){
+        //might as well be void though
+        User u=getUserFromId(userId);
+        if(!validator.isCorrectPassword(changeData.getOldPassword(), u.getPassword())) throw new BadRequestException("Incorrect password");
+        return true;
+    }
+    private User getUserFromId(int userId){
+        return Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No user found"))).get();
+    }
+
+    public UserWithoutPassDTO userWithouPassById(int id) {
+        return mapper.map(userRepository.findById(id),UserWithoutPassDTO.class);
+    }
 }

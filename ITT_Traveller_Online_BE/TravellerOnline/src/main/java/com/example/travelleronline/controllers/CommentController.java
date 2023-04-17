@@ -11,24 +11,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class CommentController {
+public class CommentController extends AbstractController {
     @Autowired
     private CommentService commentService;
 
     @PostMapping("/posts/{id}/comments")
-    public Comment commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession s) {
-        return commentService.saveByPost(contentData,postId,s);
+    public Comment commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession session) {
+        return commentService.saveByPost(contentData,postId, getLoggedId(session));
     }
     @PostMapping("/comments/{id}/comments")
-    public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession s) {
-        return commentService.saveByComment(contentData,commentId,s);
+    public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
+        return commentService.saveByComment(contentData,commentId, getLoggedId(session));
     }
     @DeleteMapping("/comments/{id}")
-    public void deleteUserBySessionUserId(HttpSession s,@PathVariable("id") int commentId) {
-
-        //System.out.println("Entering:"+commentId);
-        commentService.deleteById(commentId,s);
-        return ;
+    public void deleteUserBySessionUserId(HttpSession session,@PathVariable("id") int commentId) {
+        getLoggedId(session);
+        commentService.deleteById(commentId);
     }
 
 
@@ -56,8 +54,8 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public List<Comment> getAllCommentsOfUser(HttpSession s) {
-        return commentService.getAllCommentOfUser(s);
+    public List<Comment> getAllCommentsOfUser(HttpSession session) {
+        return commentService.getAllCommentOfUser(getLoggedId(session));
     }
 
 

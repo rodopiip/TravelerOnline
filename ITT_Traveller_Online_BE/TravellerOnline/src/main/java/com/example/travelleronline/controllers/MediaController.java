@@ -13,13 +13,13 @@ import java.io.File;
 import java.nio.file.Files;
 
 @RestController
-public class MediaController {
+public class MediaController extends AbstractController{
     @Autowired
     private MediaService mediaService;
 
-    @PostMapping("/user/media")
+    @PutMapping("/user/media")
     public UserWithoutPassDTO uploadProfilePic(@RequestParam("file")MultipartFile file, HttpSession session){
-        return mediaService.changeProfilePic(file,session);
+        return mediaService.changeProfilePic(file,getLoggedId(session));
     }
     @SneakyThrows
     @GetMapping("/media/{filename}")
