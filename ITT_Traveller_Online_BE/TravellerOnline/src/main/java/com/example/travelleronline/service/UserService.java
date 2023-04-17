@@ -30,7 +30,7 @@ public class UserService {
     @Autowired
     private ValidationService validator;
 
-    BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+    //BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
 
     public UserWithoutPassDTO login(LoginDTO loginData){
         User u=userRepository.findByEmail(loginData.getEmail());
@@ -41,7 +41,7 @@ public class UserService {
         return mapper.map(u, UserWithoutPassDTO.class);
     }
     public boolean checkPassword(ChangePassDTO changeData,int id){
-        //might aswell be void though
+        //might as well be void though
         User u=userRepository.findById(id);
         if(!validator.isCorrectPassword(changeData.getOldPassword(), u.getPassword())) throw new BadRequestException("Incorrect password");
         return true;
@@ -50,9 +50,7 @@ public class UserService {
     public UserWithoutPassDTO register(RegisterDTO regData) {
         String email= regData.getEmail();
         //fix for different exceptions
-        if(userRepository.existsByEmail(email)){
-           throw new BadRequestException("Email already in use");
-        }
+
         if(!validator.isValidEmail(email)){
             throw new BadRequestException("Incorrect Email");
         }
@@ -61,6 +59,9 @@ public class UserService {
         }
         if(!(regData.getPassword().equals( regData.getConfirmPassword()))){
             throw new BadRequestException("Passwords must match");
+        }
+        if(userRepository.existsByEmail(email)){
+            throw new BadRequestException("Email already in use");
         }
         User u= mapper.map(regData,User.class);
         u.setPassword(validator.encodePassword(u.getPassword()));
@@ -83,7 +84,7 @@ public class UserService {
         return mapper.map(u, UserWithoutPassDTO.class);
     }
 
-    public List<User> searchUsers(SearchUDTO criteria) {
+    public List<UserWithoutPassDTO> searchUsers(SearchUDTO criteria) {
         //this is when you know what type exactly is the search data(in the json)
         //toDo: make it work like a searchbar, idea: if it's 1 parameter add it in ever field?
         List<User> users = userRepository.findAll();
@@ -96,6 +97,7 @@ public class UserService {
                         || user.getEmail().equalsIgnoreCase(criteria.getEmail()))
                 .filter(user -> criteria.getPhoneNumber() == null
                         || user.getPhoneNumber().equalsIgnoreCase(criteria.getPhoneNumber()))
+                .map(u->mapper.map(u,UserWithoutPassDTO.class))
                 .collect(Collectors.toList());
     }
 
