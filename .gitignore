@@ -1,4 +1,4 @@
-*/src/main/resources/application.properties
+uploads/
 application.properties
 # Compiled class file
 *.class
