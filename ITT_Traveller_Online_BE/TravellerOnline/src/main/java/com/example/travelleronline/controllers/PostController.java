@@ -4,6 +4,7 @@ import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.service.PostService;
 import com.example.travelleronline.service.SessionService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class PostController extends AbstractController{
     }
 
     //delete post - localhost:3333/posts/{postId}
+    @Transactional
     @DeleteMapping("/posts/{postId}")
     public void deletePost(@PathVariable("postId") int id){
         postService.deletePost(id);//todo service
