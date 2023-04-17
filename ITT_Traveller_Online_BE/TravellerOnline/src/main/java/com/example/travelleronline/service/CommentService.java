@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CommentService {
+public class CommentService extends AbstractService{
 
     @Autowired
     private CommentRepository commentRepository;
@@ -30,7 +30,9 @@ public class CommentService {
         return commentOptional.orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
     }
 
-    public Comment saveByPost(int userId, ContentDTO contentData, int postId) {
+    public Comment saveByPost(ContentDTO contentData, int postId,HttpSession session) {
+        isLogged(session);
+        int userId=UserController.getId(session);
         try {
             Comment comment = Comment.builder()
                     .userId(userId)
@@ -46,7 +48,9 @@ public class CommentService {
             throw new BadSaveToDBException("Cannot respond to that post, because it doesn't exist");
         }
     }
-    public Comment saveByComment(int userId, ContentDTO contentData, int commentedCommentId) {
+    public Comment saveByComment(ContentDTO contentData, int commentedCommentId,HttpSession session) {
+        isLogged(session);
+        int userId=UserController.getId(session);
         try {
             Comment comment = Comment.builder()
                     .userId(userId)
@@ -74,7 +78,8 @@ public class CommentService {
 
     public Comment deleteById(int id, HttpSession s) {
         Comment toBeDeleted=findById(id);
-        SessionService.checkOwner(s,toBeDeleted.getUserId());
+        checkOwner(s,toBeDeleted.getUserId());
+        isLogged(s);
 
         deleteSubComments(toBeDeleted.getId());
         commentRepository.delete(toBeDeleted);
@@ -105,7 +110,8 @@ public class CommentService {
         return commentRepository.findAllByPostId(postId);
     }
 
-    public List<Comment> getAllCommentOfUser(int userId){
-        return commentRepository.findAllByUserId(userId);
+    public List<Comment> getAllCommentOfUser(HttpSession session){
+        isLogged(session);
+        return commentRepository.findAllByUserId(getUserId(session));
     }
 }

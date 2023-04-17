@@ -4,11 +4,12 @@ import com.example.travelleronline.model.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.swing.*;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 
-    User findByEmail(String email);
-    User findById(int id);
+    Optional<User> findByEmail(String email);
+    Optional<User> findById(int id);
     boolean existsByEmail(String email);
 }

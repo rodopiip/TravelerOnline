@@ -3,7 +3,9 @@ package com.example.travelleronline.model.entities;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 import lombok.*;
@@ -63,6 +65,21 @@ public class User {
 
     @Column(name = "verification_code")
     private String verificationCode;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_subscribe_to_users",
+            joinColumns = @JoinColumn(name = "subscriber_id"),
+            inverseJoinColumns = @JoinColumn(name="subscribed_to_id")
+    )
+    private Set<User> subscribers=new HashSet<>();
+
+    @ManyToMany(mappedBy = "subscribers")
+    private Set<User> subscribedTo=new HashSet<>();
+
+
+
+
 
     //list<Post>//created posts
     //DILEMA

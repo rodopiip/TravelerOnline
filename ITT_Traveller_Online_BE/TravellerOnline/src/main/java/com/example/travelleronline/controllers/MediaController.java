@@ -2,7 +2,6 @@ package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import com.example.travelleronline.service.MediaService;
-import com.example.travelleronline.service.SessionService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
@@ -20,7 +19,6 @@ public class MediaController {
 
     @PostMapping("/user/media")
     public UserWithoutPassDTO uploadProfilePic(@RequestParam("file")MultipartFile file, HttpSession session){
-        SessionService.isLogged(session);
         return mediaService.changeProfilePic(file,session);
     }
     @SneakyThrows
@@ -30,8 +28,4 @@ public class MediaController {
         Files.copy(img.toPath(),response.getOutputStream());
         return;
     }
-    public void downloadVideo(){
-        return;
-    }
-
 }

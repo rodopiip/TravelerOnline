@@ -3,6 +3,7 @@ package com.example.travelleronline.service;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.repositories.PostRepository;
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Service
-public class PostService {
+public class PostService extends AbstractService{
     @Autowired
     private PostRepository postRepository;//data base
-    @Autowired
-    private ModelMapper mapper;//Entity <-> DTO
-
-
 
     //add post
     public PostInfoDTO addPost(PostInfoDTO newPost, List<MultipartFile> images, MultipartFile video){//todo after service
@@ -29,7 +26,7 @@ public class PostService {
 
         //upload single video
         //save
-        MediaService.upload();//insert parameters into upload method
+        //MediaService.upload();//insert parameters into upload method
         Post p = mapper.map(newPost, Post.class);
         postRepository.save(p);
         return mapper.map(p, PostInfoDTO.class);
@@ -41,7 +38,8 @@ public class PostService {
     }
 
     //get posts by user_id
-    public List<PostInfoDTO> getUserPosts(int userId) {
+    public List<PostInfoDTO> getUserPosts(HttpSession session) {
+        int userId = getUserId(session);
         return null;
     }
 

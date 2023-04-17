@@ -17,18 +17,18 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class MediaService{
+public class MediaService extends AbstractService{
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ModelMapper mapper;
+
 
     private User getUserBySession(HttpSession session){
-        return userRepository.findById(SessionService.getUserId(session));
+        return Optional.ofNullable(userRepository.findById(getUserId(session)).orElseThrow(()->new BadRequestException("No account found"))).get();
     }
 
     @SneakyThrows
@@ -52,7 +52,7 @@ public class MediaService{
     }
 
     public UserWithoutPassDTO changeProfilePic(MultipartFile file, HttpSession session){
-
+        isLogged(session);
         String url=uploadMedia(file);
         User user=getUserBySession(session);
         user.setProfilePhoto(url);

@@ -5,18 +5,14 @@ import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
 import com.example.travelleronline.model.DTOs.user.LoginDTO;
 import com.example.travelleronline.model.DTOs.user.RegisterDTO;
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
-import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
-import com.example.travelleronline.model.exceptions.UnauthorizedException;
-import com.example.travelleronline.service.SessionService;
+import com.example.travelleronline.service.AbstractService;
 import com.example.travelleronline.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class UserController extends AbstractController{
@@ -47,15 +43,7 @@ public class UserController extends AbstractController{
 
     @PutMapping("/userpass")
     public UserWithoutPassDTO changePass(@RequestBody ChangePassDTO changePassData, HttpSession s){
-        SessionService.isLogged(s);
-        int id=(Integer) s.getAttribute("LOGGED_ID");
-        userService.checkPassword(changePassData,id);
-        if (!changePassData.getNewPassword().
-                        equals(
-                                changePassData.getConfirmNewPassword())){
-            throw new BadRequestException("Confirm new pass must match new password.");
-        }
-         return userService.changePass(changePassData,id);
+         return userService.changePass(changePassData,s);
     }
 
     /*Hey buddy, i'm sure you would argue that this request should be a GET request. However, i'm uncertain
@@ -69,19 +57,21 @@ public class UserController extends AbstractController{
 
     @DeleteMapping("/users")
     public UserWithoutPassDTO deleteUserBySessionUserId(HttpSession s) {
-        SessionService.isLogged(s);
-        int id = SessionService.getUserId(s);
-        UserWithoutPassDTO u=userService.getById(id);
-        userService.deleteUserById(id);
-        return u;
+        return userService.deleteUserById(s);
     }
 
     @PutMapping("/users")
     public UserWithoutPassDTO updateUser(@RequestBody UserWithoutPassDTO userUpdateDTO,HttpSession s) {
-        SessionService.isLogged(s);
-        userUpdateDTO = userService.updateUser(userUpdateDTO,
-                SessionService.getUserId(s));
-        return userUpdateDTO;
+        return userService.updateUser(userUpdateDTO,s);
+    }
+
+    @PostMapping("/users/subscribe/{subscribe_to_user}")
+    public void subscribe(HttpSession s,
+                          @PathVariable("subscribe_to_user") int subscribedToId
+                            ) {
+        userService.subscribe(s, subscribedToId);
+
+        return;
     }
 
     //USER-POST MAPPINGS
