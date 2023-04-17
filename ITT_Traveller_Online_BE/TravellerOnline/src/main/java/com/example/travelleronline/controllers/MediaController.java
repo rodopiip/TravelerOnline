@@ -30,7 +30,7 @@ public class MediaController {
     @SneakyThrows
     @GetMapping("/media/{filename}")
     public void downloadImage(@PathVariable("filename") String fileName, HttpServletResponse response){
-        File img=mediaService.downloadImage(fileName);
+        File img=mediaService.downloadMedia(fileName);
         Files.copy(img.toPath(),response.getOutputStream());
         return;
     }
