@@ -62,9 +62,9 @@ public class UserController extends AbstractController{
      of how much different criteria there should be for the SEARCH, so i'm using a POST, and getting the Request Body
      for the parameters, instead of putting all of them into the url link*/
     @PostMapping("/users/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestBody SearchUDTO criteria) {
-        List<User> users = userService.searchUsers(criteria);
-        return ResponseEntity.ok(users);
+    public List<UserWithoutPassDTO> searchUsers(@RequestBody SearchUDTO criteria) {
+        List<UserWithoutPassDTO> users = userService.searchUsers(criteria);
+        return users;
     }
 
     @DeleteMapping("/users")
@@ -75,8 +75,6 @@ public class UserController extends AbstractController{
         userService.deleteUserById(id);
         return u;
     }
-
-    //ToDo: Move this business logic somewhere else (prob. ValidatorService.)
 
     @PutMapping("/users")
     public UserWithoutPassDTO updateUser(@RequestBody UserWithoutPassDTO userUpdateDTO,HttpSession s) {
