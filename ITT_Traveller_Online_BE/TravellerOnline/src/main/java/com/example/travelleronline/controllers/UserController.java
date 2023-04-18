@@ -32,7 +32,8 @@ public class UserController extends AbstractController{
 
     @GetMapping("/users/{userId}")
     public UserWithoutPassDTO showUserById(@PathVariable int userId){
-        return userService.userWithouPassById(userId);
+        //return userService.userWithouPassById(userId);
+        return userService.userWithSubById(userId);
     }
 
     @PutMapping("/userpass")
@@ -60,11 +61,19 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/users/subscribe/{subscribe_to_user}")
-    public void subscribe(HttpSession session,
+    public String subscribe(HttpSession session,
                           @PathVariable("subscribe_to_user") int subscribedToId
                             ) {
-        userService.subscribe(getLoggedId(session), subscribedToId);
+        return "Subscribers:"+userService.subscribe(getLoggedId(session), subscribedToId);
 
+    }
+    @GetMapping("/users/{subscribedTo}/subscribers")
+    public List<UserWithoutPassDTO> getSubscribers(@PathVariable int subscribedTo){
+        return userService.getSubscribers(subscribedTo);
+    }
+    @GetMapping("/users/{subscriber}/subscribedTo")
+    public List<UserWithoutPassDTO> getSubscriptions(@PathVariable int subscriber){
+        return userService.getSubscribedTo(subscriber);
     }
 
     //USER-POST MAPPINGS

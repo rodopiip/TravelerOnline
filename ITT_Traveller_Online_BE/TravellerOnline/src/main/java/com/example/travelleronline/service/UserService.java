@@ -1,17 +1,15 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.DTOs.user.SearchUDTO;
-import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
-import com.example.travelleronline.model.DTOs.user.LoginDTO;
-import com.example.travelleronline.model.DTOs.user.RegisterDTO;
-import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
+import com.example.travelleronline.model.DTOs.user.*;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,7 +62,7 @@ public class UserService extends AbstractService{
                         changePassData.getConfirmNewPassword())){
             throw new BadRequestException("Confirm new pass must match new password.");
         }
-        User u=Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No account found"))).get();;
+        User u=Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No account found"))).get();
         u.setPassword(validator.encodePassword(changePassData.getNewPassword()));
         userRepository.save(u);
         return mapper.map(u, UserWithoutPassDTO.class);
@@ -121,7 +119,15 @@ public class UserService extends AbstractService{
         User subscribedTo = Optional.ofNullable(userRepository.findById(subscribedToId).orElseThrow(()->new BadRequestException("No user found"))).get();;
 
 
-        subscribedTo.getSubscribers().add(subscriber);
+        if(subscriber.getSubscribedTo().contains(subscribedTo)){
+            //subscriber.getSubscribedTo().remove(subscribedTo);
+            subscribedTo.getSubscribers().remove(subscriber);
+        }else{
+           // subscriber.getSubscribedTo().add(subscribedTo);
+            subscribedTo.getSubscribers().add(subscriber);
+
+        }
+        //userRepository.save(subscriber);
         userRepository.save(subscribedTo);
         return subscribedTo.getSubscribers().size();
     }
@@ -137,7 +143,28 @@ public class UserService extends AbstractService{
         return Optional.ofNullable(userRepository.findById(userId).orElseThrow(()->new BadRequestException("No user found"))).get();
     }
 
-    public UserWithoutPassDTO userWithouPassById(int id) {
-        return mapper.map(userRepository.findById(id),UserWithoutPassDTO.class);
+    public UserWithoutPassDTO userWithouPassById(int userId) {
+        return mapper.map(userRepository.findById(userId),UserWithoutPassDTO.class);
+    }
+
+    public UserWithoutPassDTO userWithSubById(int userId) {
+        return mapper.map(userRepository.findById(userId).orElseThrow(()->new BadRequestException("Such user doesn't exist")), UserWithSub.class);
+    }
+
+    public List<UserWithoutPassDTO> getSubscribers(int subscribedTo) {
+        User u=userRepository.findById(subscribedTo).get();
+        List<UserWithoutPassDTO> list=  new ArrayList<>();
+        //return mapper.map(u, UserWithoutPassDTO.class);
+        if(u.getSubscribers().isEmpty()) throw new BadRequestException("No Subscribers");
+        u.getSubscribers().forEach(user -> list.add(mapper.map(user,UserWithoutPassDTO.class)));
+        return list;
+    }
+    public List<UserWithoutPassDTO> getSubscribedTo(int subscriber) {
+        User u=userRepository.findById(subscriber).get();
+        List<UserWithoutPassDTO> list= new ArrayList<>();
+        //return mapper.map(u, UserWithoutPassDTO.class);
+        if(u.getSubscribedTo().isEmpty()) throw new BadRequestException("No Subscriptions");
+        u.getSubscribedTo().forEach(user -> list.add(mapper.map(user,UserWithoutPassDTO.class)));
+        return list;
     }
 }

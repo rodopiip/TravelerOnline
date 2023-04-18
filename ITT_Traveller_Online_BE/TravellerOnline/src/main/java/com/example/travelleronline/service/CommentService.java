@@ -38,6 +38,7 @@ public class CommentService extends AbstractService{
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .superCommentId(null)
+                    //.parentComment(null)
                     .build();
             System.out.println(comment);
             return commentRepository.save(comment);
@@ -52,6 +53,7 @@ public class CommentService extends AbstractService{
                     .userId(userId)
                     .content(contentData.getContent())
                     .superCommentId(commentedCommentId)
+                    //.parentComment(commentRepository.getReferenceById(commentedCommentId))
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .postId(null)
