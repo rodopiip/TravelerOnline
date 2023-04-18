@@ -52,7 +52,7 @@ public abstract class AbstractController {
         //      1)Checks if a user is logged
         //      2)returns the userId
         Optional<Integer> userId=Optional.ofNullable((Integer) s.getAttribute("LOGGED_ID"));
-        if(userId.isPresent()){
+        if(userId.isPresent() && userId.get()!=0){
             return userId.get();
         }
         throw new UnauthorizedException("You have to Login");
