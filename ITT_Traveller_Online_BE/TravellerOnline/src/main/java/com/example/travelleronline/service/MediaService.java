@@ -44,6 +44,7 @@ public class MediaService extends AbstractService{
 
     public UserWithoutPassDTO changeProfilePic(MultipartFile file,int userId){
         String url=uploadMedia(file);
+        //maybe validate it's image?
         User user=userRepository.findById(userId).orElseThrow(()->new BadRequestException("User does not exist anymore"));
         user.setProfilePhoto(url);
         userRepository.save(user);

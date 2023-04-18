@@ -44,6 +44,14 @@ public class UserService extends AbstractService{
         if(!validator.isValidNumber(regData.getPhoneNumber())){
             throw new BadRequestException("Incorrect phone number");
         }
+        if(!validator.isValidPassword(regData.getPassword())){
+            throw new BadRequestException("Password must contain:" +
+                    "At least 8 characters long. " +
+                    "Contains at least one uppercase letter. " +
+                    "Contains at least one lowercase letter. " +
+                    "Contains at least one digit. " +
+                    "Contains at least one special character");
+        }
         if(!(regData.getPassword().equals( regData.getConfirmPassword()))){
             throw new BadRequestException("Passwords must match");
         }
