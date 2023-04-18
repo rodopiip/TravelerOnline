@@ -25,7 +25,7 @@ public class UserController extends AbstractController{
         session.setAttribute("LOGGED_ID",u.getId());
         return u;
     }
-    @DeleteMapping("/logout")
+    @PostMapping("/users/logout")
     public String logout(HttpSession session){
         if(checkIfLogged(session)){
             session.setAttribute("LOGGED",false);
