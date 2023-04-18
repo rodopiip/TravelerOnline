@@ -31,9 +31,4 @@ public class TestController {
 
 
     }
-
-    private void Testiiiingg(){
-        System.out.println("WADAFAK");
-        System.out.println("aSDASDAS");
-    }
 }

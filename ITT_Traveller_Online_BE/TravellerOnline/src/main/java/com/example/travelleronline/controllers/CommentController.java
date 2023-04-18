@@ -30,6 +30,7 @@ public class CommentController extends AbstractController {
         getLoggedId(session);
         commentService.deleteById(commentId);
     }
+    //Guess what Krasi, GUESS WHICH PROJECT GETS ATTENTION.
 
 
     // from here
