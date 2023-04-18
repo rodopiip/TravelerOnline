@@ -1,6 +1,7 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.ErrorDTO;
+import com.example.travelleronline.model.DTOs.user.UserWithSub;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
@@ -55,6 +56,11 @@ public abstract class AbstractController {
             return userId.get();
         }
         throw new UnauthorizedException("You have to Login");
+    }
+    protected Boolean checkIfLogged(HttpSession s) {
+        Boolean logged= Optional.ofNullable((Boolean) s.getAttribute("LOGGED"))
+                .orElseThrow(()->new UnauthorizedException("You have to Login"));
+        return logged;
     }
 
     public boolean checkOwner(HttpSession s, int ownerId){

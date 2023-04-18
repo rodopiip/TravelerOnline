@@ -5,6 +5,7 @@ import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
 import com.example.travelleronline.model.DTOs.user.LoginDTO;
 import com.example.travelleronline.model.DTOs.user.RegisterDTO;
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
+import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,20 @@ public class UserController extends AbstractController{
     private UserService userService;
 
     @PostMapping("/users/auth")
-    public UserWithoutPassDTO login(@RequestBody LoginDTO loginData,HttpSession s){
+    public UserWithoutPassDTO login(@RequestBody LoginDTO loginData,HttpSession session){
         UserWithoutPassDTO u = userService.login(loginData);
-        s.setAttribute("LOGGED",true);
-        s.setAttribute("LOGGED_ID",u.getId());
+        session.setAttribute("LOGGED",true);
+        session.setAttribute("LOGGED_ID",u.getId());
         return u;
+    }
+    @DeleteMapping("/logout")
+    public String logout(HttpSession session){
+        if(checkIfLogged(session)){
+            session.setAttribute("LOGGED",false);
+            session.setAttribute("LOGGED_ID",0);
+            throw new UnauthorizedException("Successfully logged out");
+        }
+        throw new UnauthorizedException("You need to be logged, to be able to log out");
     }
 
     @PostMapping("/users")
