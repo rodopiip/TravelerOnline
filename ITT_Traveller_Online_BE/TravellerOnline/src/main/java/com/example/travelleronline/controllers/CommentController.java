@@ -5,6 +5,7 @@ import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.service.CommentService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class CommentController extends AbstractController {
     public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
         return commentService.saveByComment(contentData,commentId, getLoggedId(session));
     }
+    @Transactional
     @DeleteMapping("/comments/{id}")
     public void deleteUserBySessionUserId(HttpSession session,@PathVariable("id") int commentId) {
         getLoggedId(session);
