@@ -10,6 +10,7 @@ import java.util.Set;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -42,7 +43,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "date_of_birth", nullable = false)
-    @NotBlank
+    @NotNull
     private LocalDate dateOfBirth;
 
     @Column(name = "profile_photo")
