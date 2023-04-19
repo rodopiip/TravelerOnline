@@ -6,6 +6,8 @@ import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class AbstractController {
+    protected static final Logger logger = LogManager.getLogger(AbstractController.class);
+
     @ExceptionHandler(BadRequestException.class)
     //@ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleBadRequest(Exception e){
