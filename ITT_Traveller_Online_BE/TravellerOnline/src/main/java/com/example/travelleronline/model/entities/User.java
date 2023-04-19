@@ -8,15 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 
+import jakarta.validation.constraints.Size;
 import lombok.*;
-
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.Table;
-//
-//import jakarta.persistence.Column;
-//import jakarta.persistence.GeneratedValue;
-//import jakarta.persistence.GenerationType;
-//import jakarta.persistence.Id;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +26,7 @@ public class User {
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
+    @Size(min = 3,max = 50)
     private String lastName;
 
     @Column(name = "password", nullable = false)

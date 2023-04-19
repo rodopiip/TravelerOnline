@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-// dto- as records?
+//make fields valid.
 @Getter
 @Setter
 @AllArgsConstructor
