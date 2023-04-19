@@ -5,31 +5,36 @@ import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.service.CommentService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+<<<<<<< HEAD
 public class CommentController extends AbstractController{
+=======
+public class CommentController extends AbstractController {
+>>>>>>> f232377eec16f745e79bb65612b867f2ea4df1fd
     @Autowired
     private CommentService commentService;
 
     @PostMapping("/posts/{id}/comments")
-    public Comment commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession s) {
-        return commentService.saveByPost(contentData,postId,s);
+    public Comment commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession session) {
+        return commentService.saveByPost(contentData,postId, getLoggedId(session));
     }
     @PostMapping("/comments/{id}/comments")
-    public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession s) {
-        return commentService.saveByComment(contentData,commentId,s);
+    public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
+        return commentService.saveByComment(contentData,commentId, getLoggedId(session));
     }
+    @Transactional
     @DeleteMapping("/comments/{id}")
-    public void deleteUserBySessionUserId(HttpSession s,@PathVariable("id") int commentId) {
-
-        //System.out.println("Entering:"+commentId);
-        commentService.deleteById(commentId,s);
-        return ;
+    public void deleteUserBySessionUserId(HttpSession session,@PathVariable("id") int commentId) {
+        getLoggedId(session);
+        commentService.deleteById(commentId);
     }
+    //Guess what Krasi, GUESS WHICH PROJECT GETS ATTENTION.
 
 
     // from here
@@ -56,8 +61,8 @@ public class CommentController extends AbstractController{
     }
 
     @GetMapping("/comments")
-    public List<Comment> getAllCommentsOfUser(HttpSession s) {
-        return commentService.getAllCommentOfUser(s);
+    public List<Comment> getAllCommentsOfUser(HttpSession session) {
+        return commentService.getAllCommentOfUser(getLoggedId(session));
     }
 
 

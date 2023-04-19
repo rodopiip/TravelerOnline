@@ -1,6 +1,7 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.ErrorDTO;
+import com.example.travelleronline.model.DTOs.user.UserWithSub;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public abstract class AbstractController {
     @ExceptionHandler(BadRequestException.class)
@@ -45,9 +47,28 @@ public abstract class AbstractController {
     }
 
     protected int getLoggedId(HttpSession s){
-        if(s.getAttribute("LOGGED_ID") == null){
-            throw new UnauthorizedException("Please login first");
+        // Solid: 1 method has to do 1 thing.
+        // this does 2 things.
+        //      1)Checks if a user is logged
+        //      2)returns the userId
+        Optional<Integer> userId=Optional.ofNullable((Integer) s.getAttribute("LOGGED_ID"));
+        if(userId.isPresent() && userId.get()!=0){
+            return userId.get();
         }
-        return (int) s.getAttribute("LOGGED_ID");
+        throw new UnauthorizedException("You have to Login");
     }
+    protected Boolean checkIfLogged(HttpSession s) {
+        Boolean logged= Optional.ofNullable((Boolean) s.getAttribute("LOGGED"))
+                .orElseThrow(()->new UnauthorizedException("You have to Login"));
+        return logged;
+    }
+
+    public boolean checkOwner(HttpSession s, int ownerId){
+        if(getLoggedId(s)==ownerId) return true;
+        else{
+            throw new UnauthorizedException("You need to be the owner.");
+        }
+    }
+
+
 }

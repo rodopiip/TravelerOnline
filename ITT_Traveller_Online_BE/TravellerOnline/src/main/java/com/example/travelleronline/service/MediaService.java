@@ -5,19 +5,15 @@ import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.repositories.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,11 +21,6 @@ public class MediaService extends AbstractService{
 
     @Autowired
     private UserRepository userRepository;
-
-
-    private User getUserBySession(HttpSession session){
-        return Optional.ofNullable(userRepository.findById(getUserId(session)).orElseThrow(()->new BadRequestException("No account found"))).get();
-    }
 
     @SneakyThrows
     public static String uploadMedia(MultipartFile file){
@@ -51,10 +42,10 @@ public class MediaService extends AbstractService{
         return true;
     }
 
-    public UserWithoutPassDTO changeProfilePic(MultipartFile file, HttpSession session){
-        isLogged(session);
+    public UserWithoutPassDTO changeProfilePic(MultipartFile file,int userId){
         String url=uploadMedia(file);
-        User user=getUserBySession(session);
+        //maybe validate it's image?
+        User user=userRepository.findById(userId).orElseThrow(()->new BadRequestException("User does not exist anymore"));
         user.setProfilePhoto(url);
         userRepository.save(user);
         return mapper.map(user, UserWithoutPassDTO.class);
@@ -69,8 +60,4 @@ public class MediaService extends AbstractService{
             throw new NotFoundException("File not Found");
         }
     }
-    public void downloadVideo(){
-        return;
-    }
-
 }

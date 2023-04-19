@@ -29,8 +29,8 @@ public class PostController extends AbstractController{
 
     //get posts by user_id - localhost:3333/users/posts
     @GetMapping("/users/{user-id}/posts")
-    public List<PostInfoDTO> getUserPosts(HttpSession s){
-        return postService.getUserPosts(s);//todo service
+    public List<PostInfoDTO> getUserPosts(HttpSession session){
+        return postService.getUserPosts(getLoggedId(session));//todo service
     }
 
     //get all posts - localhost:3333/posts
@@ -41,20 +41,13 @@ public class PostController extends AbstractController{
         return postService.getPosts();//todo service
     }
 
-    //add post - localhost:3333/posts
-    @PostMapping("/posts")
-<<<<<<< HEAD
-    public PostInfoDTO addPost(@RequestBody CreatePostDTO postInfoWithoutOwnerDTO,
-                               HttpSession s,
-                               @RequestBody List<MultipartFile> images,
-                               @RequestBody MultipartFile video){
+    public void/*PostInfoDTO*/ addPost(@RequestBody CreatePostDTO postInfoWithoutOwnerDTO,
+                                       HttpSession s,
+                                       @RequestBody List<MultipartFile> images,
+                                       @RequestBody MultipartFile video){
         //get user id from session todo
-        return postService.addPost(postInfoWithoutOwnerDTO, getLoggedId(s));//question: are media files needed?
-
-=======
-    public void/*PostInfoDTO*/ addPost(@RequestBody PostInfoDTO postInfoDTO){
-        //return postService.addPost(postInfoDTO);
->>>>>>> master
+        //postService.addPost(postInfoWithoutOwnerDTO, getLoggedId(s));//question: are media files needed?
+        return;
     }
 
     //add video to post - localhost:3333/posts/{postId}/upload-video

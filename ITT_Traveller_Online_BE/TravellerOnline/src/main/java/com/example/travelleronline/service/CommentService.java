@@ -1,11 +1,9 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.controllers.UserController;
 import com.example.travelleronline.model.DTOs.comment.ContentDTO;
 import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.BadSaveToDBException;
 import com.example.travelleronline.model.repositories.CommentRepository;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +28,8 @@ public class CommentService extends AbstractService{
         return commentOptional.orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
     }
 
-    public Comment saveByPost(ContentDTO contentData, int postId,HttpSession session) {
-        isLogged(session);
-        int userId=UserController.getId(session);
+    public Comment saveByPost(ContentDTO contentData, int postId,int userId) {
+
         try {
             Comment comment = Comment.builder()
                     .userId(userId)
@@ -41,6 +38,7 @@ public class CommentService extends AbstractService{
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .superCommentId(null)
+                    //.parentComment(null)
                     .build();
             System.out.println(comment);
             return commentRepository.save(comment);
@@ -48,14 +46,14 @@ public class CommentService extends AbstractService{
             throw new BadSaveToDBException("Cannot respond to that post, because it doesn't exist");
         }
     }
-    public Comment saveByComment(ContentDTO contentData, int commentedCommentId,HttpSession session) {
-        isLogged(session);
-        int userId=UserController.getId(session);
+    public Comment saveByComment(ContentDTO contentData, int commentedCommentId,int userId) {
+
         try {
             Comment comment = Comment.builder()
                     .userId(userId)
                     .content(contentData.getContent())
                     .superCommentId(commentedCommentId)
+                    //.parentComment(commentRepository.getReferenceById(commentedCommentId))
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .postId(null)
@@ -76,11 +74,9 @@ public class CommentService extends AbstractService{
         return commentRepository.save(existingComment);
     }
 
-    public Comment deleteById(int id, HttpSession s) {
-        Comment toBeDeleted=findById(id);
-        checkOwner(s,toBeDeleted.getUserId());
-        isLogged(s);
+    public Comment deleteById(int id) {
 
+        Comment toBeDeleted=findById(id);
         deleteSubComments(toBeDeleted.getId());
         commentRepository.delete(toBeDeleted);
         return toBeDeleted;
@@ -105,13 +101,11 @@ public class CommentService extends AbstractService{
             }
         }
     }
-
     public List<Comment> getAllPostComments(int postId) {
         return commentRepository.findAllByPostId(postId);
     }
 
-    public List<Comment> getAllCommentOfUser(HttpSession session){
-        isLogged(session);
-        return commentRepository.findAllByUserId(getUserId(session));
+    public List<Comment> getAllCommentOfUser(int userId){
+        return commentRepository.findAllByUserId(userId);
     }
 }
