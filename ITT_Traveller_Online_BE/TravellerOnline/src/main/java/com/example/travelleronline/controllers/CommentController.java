@@ -30,22 +30,16 @@ public class CommentController extends AbstractController {
         getLoggedId(session);
         commentService.deleteById(commentId);
     }
-
-
-    // from here
-
     @GetMapping("/comments/{id}")
     public Comment getCommentById(@PathVariable("id") int id) {
         // specific comment || maybe make it all comments of a comment
         Comment comment = commentService.findById(id);
         return comment;
     }
-
     @GetMapping("/comments/{id}/comments")
     public List<Comment> getAllCommentsOfComment(@PathVariable("id") int id) {
         return commentService.getAllSubComments(id);
     }
-
     @GetMapping("/posts/{postId}/comments")
     public List<Comment> getAllCommentsOfPost(@PathVariable("postId") int postId, HttpSession s) {
         try {
@@ -54,21 +48,8 @@ public class CommentController extends AbstractController {
             throw new NotFoundException("Post does not exist");
         }
     }
-
     @GetMapping("/comments")
     public List<Comment> getAllCommentsOfUser(HttpSession session) {
         return commentService.getAllCommentOfUser(getLoggedId(session));
     }
-
-
-
-    /* comment a user?
-    @GetMapping("/users/comments")
-    public ResponseEntity<List<Comment>> getAllCommentsOfUser() {
-        //todo: logged in, loggedId
-        //of current user List<Comment> comments = commentService.findAll();
-        List<Comment> comments = null;
-        return ResponseEntity.ok(comments);
-    }
-    */
 }

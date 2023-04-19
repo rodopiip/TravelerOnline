@@ -24,7 +24,6 @@ public class MediaService extends AbstractService{
 
     @SneakyThrows
     public static String uploadMedia(MultipartFile file){
-        //FTS
         String ext= FilenameUtils.getExtension(file.getOriginalFilename());
         String uplName= UUID.randomUUID()+"."+ext;
         File folder=new File("uploads");
