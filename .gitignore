@@ -1,4 +1,6 @@
 uploads/
+log.log
+log4j2.xml
 application.properties
 # Compiled class file
 *.class

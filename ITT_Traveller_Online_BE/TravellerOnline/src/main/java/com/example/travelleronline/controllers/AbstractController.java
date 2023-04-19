@@ -6,6 +6,8 @@ import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class AbstractController {
+    protected static final Logger logger = LogManager.getLogger(AbstractController.class);
+
     @ExceptionHandler(BadRequestException.class)
     //@ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleBadRequest(Exception e){
@@ -45,24 +49,13 @@ public abstract class AbstractController {
                 .status(s.value())
                 .build();
     }
-
     protected int getLoggedId(HttpSession s){
-        // Solid: 1 method has to do 1 thing.
-        // this does 2 things.
-        //      1)Checks if a user is logged
-        //      2)returns the userId
         Optional<Integer> userId=Optional.ofNullable((Integer) s.getAttribute("LOGGED_ID"));
         if(userId.isPresent() && userId.get()!=0){
             return userId.get();
         }
         throw new UnauthorizedException("You have to Login");
     }
-    protected Boolean checkIfLogged(HttpSession s) {
-        Boolean logged= Optional.ofNullable((Boolean) s.getAttribute("LOGGED"))
-                .orElseThrow(()->new UnauthorizedException("You have to Login"));
-        return logged;
-    }
-
     public boolean checkOwner(HttpSession s, int ownerId){
         if(getLoggedId(s)==ownerId) return true;
         else{
