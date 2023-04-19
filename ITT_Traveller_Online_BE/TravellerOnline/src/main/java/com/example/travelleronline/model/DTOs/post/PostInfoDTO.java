@@ -2,6 +2,7 @@ package com.example.travelleronline.model.DTOs.post;
 
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PostInfoDTO {
     private Integer id;//ok
     private UserWithoutPassDTO owner;

@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+<<<<<<< HEAD
+public class ReactionController extends AbstractController{
+=======
 public class ReactionController extends AbstractController {
+>>>>>>> f232377eec16f745e79bb65612b867f2ea4df1fd
     @Autowired
     private ReactionService reactionService;//todo
 

@@ -72,7 +72,7 @@ public class User {
             joinColumns = @JoinColumn(name = "subscriber_id"),
             inverseJoinColumns = @JoinColumn(name="subscribed_to_id")
     )
-    private Set<User> subscribers=new HashSet<>();
+    private Set<User> subscribers=new HashSet<>();//todo for subscribers DTO .map(User::getSubscribers)
 
     @ManyToMany(mappedBy = "subscribers")
     private Set<User> subscribedTo=new HashSet<>();

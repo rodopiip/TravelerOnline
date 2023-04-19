@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+
 public class CommentController extends AbstractController {
     @Autowired
     private CommentService commentService;
@@ -21,7 +22,7 @@ public class CommentController extends AbstractController {
         return commentService.saveByPost(contentData,postId, getLoggedId(session));
     }
     @PostMapping("/comments/{id}/comments")
-    public Comment commentCommend(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
+    public Comment commentComment(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
         return commentService.saveByComment(contentData,commentId, getLoggedId(session));
     }
     @Transactional

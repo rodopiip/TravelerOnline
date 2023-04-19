@@ -1,5 +1,6 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.Util;
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService extends AbstractService{
@@ -85,15 +87,38 @@ public class PostService extends AbstractService{
         //save
         MediaService.upload();//insert parameters into upload method
          */
+<<<<<<< HEAD
+
+=======
+        //MediaService.upload();//insert parameters into upload method
+        Post p = mapper.map(newPost, Post.class);
+        postRepository.save(p);
+        return mapper.map(p, PostInfoDTO.class);
+>>>>>>> master
+    }//todo resolve
+=======
     }
+>>>>>>> f232377eec16f745e79bb65612b867f2ea4df1fd
 
     //get post by post_id
     public PostInfoDTO getPostById(int id) {
-        return null;
+        Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException(Util.POST_NOT_FOUND));//todo resolve
+        return PostInfoDTO
+                .builder()
+                .id(post.getId())
+                .owner(post.getOwner())//todo
+                .title(post.getTitle())
+                .//todo
     }
 
     //get posts by user_id
+<<<<<<< HEAD
+    public List<PostInfoDTO> getUserPosts(HttpSession session) {
+        int userId = getUserId(session);
+        //todo
+=======
     public List<PostInfoDTO> getUserPosts(int userID) {
+>>>>>>> f232377eec16f745e79bb65612b867f2ea4df1fd
         return null;
     }
 
