@@ -21,12 +21,13 @@ public class MediaService extends AbstractService{
 
     @Autowired
     private UserRepository userRepository;
+    private static final File folder=new File("uploads");
 
     @SneakyThrows
     public static String uploadMedia(MultipartFile file){
         String ext= FilenameUtils.getExtension(file.getOriginalFilename());
         String uplName= UUID.randomUUID()+"."+ext;
-        File folder=new File("uploads");
+
         if(!folder.exists()){
             folder.mkdirs();
         }
@@ -34,8 +35,7 @@ public class MediaService extends AbstractService{
         Files.copy(file.getInputStream(),upload.toPath(), StandardCopyOption.REPLACE_EXISTING);
         return folder.getName()+File.separator+ upload.getName();
     }
-    public static Boolean deleteMedia(String URL){
-        File folder=new File("uploads");
+    public static Boolean deleteMedia(String URL){;
         File toDelete=new File(folder,URL);
         toDelete.delete();
         return true;
@@ -51,7 +51,6 @@ public class MediaService extends AbstractService{
     }
 
     public File downloadMedia(String fileName){
-        File folder=new File("uploads");
         File f=new File(folder,fileName);
         if(f.exists()){
             return f;
