@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -23,6 +25,7 @@ public class User {
     private Integer id;
 
     @Column(name = "first_name", nullable = false)
+    @Size(min = 3,max = 50)
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
@@ -39,12 +42,14 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "date_of_birth", nullable = false)
+    @NotBlank
     private LocalDate dateOfBirth;
 
     @Column(name = "profile_photo")
     private String profilePhoto;
 
     @Column(name = "is_verified")
+
     private Boolean isVerified;
 
     @Column(name = "additional_info")

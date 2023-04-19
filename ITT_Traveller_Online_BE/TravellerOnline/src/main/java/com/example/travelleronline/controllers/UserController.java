@@ -22,8 +22,7 @@ public class UserController extends AbstractController{
     public UserWithoutPassDTO login(@Valid @RequestBody LoginDTO loginData, HttpSession session){
         UserWithoutPassDTO u = userService.login(loginData);
         session.setAttribute("LOGGED_ID",u.getId());
-        logger.trace(u);
-        logger.warn(u);
+
         return u;
     }
     @PostMapping("/users/logout")
