@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-public class UsersSavePostsController {
+public class UsersSavePostsController extends AbstractController{
 
     //@Autowired
     //private UserSavePostService userSavePostService;//todo create service

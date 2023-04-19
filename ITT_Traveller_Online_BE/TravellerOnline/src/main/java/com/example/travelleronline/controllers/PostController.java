@@ -18,7 +18,10 @@ public class PostController extends AbstractController{
     @Autowired
     private PostService postService;
 
-    //get post by post_id - localhost:3333/posts/{id}
+    /*
+    get post by post_id - localhost:3333/posts/{id}
+    a URL for accessing a web server running on your local machine
+     */
     @GetMapping("/posts/{id}")
     public PostInfoDTO getPostById(@PathVariable("id") int id){
         return postService.getPostById(id);//todo service

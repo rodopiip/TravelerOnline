@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class CommentController {
+public class CommentController extends AbstractController{
     @Autowired
     private CommentService commentService;
 

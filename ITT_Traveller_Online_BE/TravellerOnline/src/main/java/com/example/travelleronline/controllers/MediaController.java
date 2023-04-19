@@ -13,7 +13,7 @@ import java.io.File;
 import java.nio.file.Files;
 
 @RestController
-public class MediaController {
+public class MediaController extends AbstractController{
     @Autowired
     private MediaService mediaService;
 

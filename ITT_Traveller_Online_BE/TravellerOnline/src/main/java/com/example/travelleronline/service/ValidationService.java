@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 @Service
 public class ValidationService extends AbstractService{
 
-    private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();//todo : refactor : move all constants to com.example.travelleronline.Util
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final String PHONE_REGEX = "^\\+359\\s(?:2[0-9]|3[2-9]|[4-9][2-9])\\-\\d{3}\\-\\d{4}$";

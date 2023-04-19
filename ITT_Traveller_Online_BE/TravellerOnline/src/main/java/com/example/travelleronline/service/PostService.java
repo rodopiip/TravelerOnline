@@ -1,5 +1,6 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.Util;
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService extends AbstractService{
@@ -106,16 +108,23 @@ public class PostService extends AbstractService{
         postRepository.save(p);
         return mapper.map(p, PostInfoDTO.class);
 >>>>>>> master
-    }
+    }//todo resolve
 
     //get post by post_id
     public PostInfoDTO getPostById(int id) {
-        return null;
+        Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException(Util.POST_NOT_FOUND));//todo resolve
+        return PostInfoDTO
+                .builder()
+                .id(post.getId())
+                .owner(post.getOwner())//todo
+                .title(post.getTitle())
+                .//todo
     }
 
     //get posts by user_id
     public List<PostInfoDTO> getUserPosts(HttpSession session) {
         int userId = getUserId(session);
+        //todo
         return null;
     }
 
