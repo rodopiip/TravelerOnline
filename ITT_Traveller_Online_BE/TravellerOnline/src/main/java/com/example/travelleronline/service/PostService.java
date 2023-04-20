@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +20,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostService extends AbstractService{
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private PostRepository postRepository;//data base
+    @Autowired
+    private CategoryService categoryService;
     @Autowired
     private MediaService mediaService;
 
@@ -107,11 +109,12 @@ public class PostService extends AbstractService{
     }
 
     public List<PostInfoDTO> getPosts() {//todo criteria
-        List<Post> posts = postRepository.getAll();
-        return posts
-                .stream()
-                .map(p -> mapper.map(p, PostInfoDTO.class))
-                .collect(Collectors.toList());
+        return null;
+//        List<Post> posts = postRepository.getAll();
+//        return posts
+//                .stream()
+//                .map(p -> mapper.map(p, PostInfoDTO.class))
+//                .collect(Collectors.toList());
     }
 
     public List<PostInfoDTO> getUserPosts(int loggedId) {
@@ -127,6 +130,22 @@ public class PostService extends AbstractService{
         Post post = postRepository.findById(postId).orElseThrow(()->new BadRequestException("Post not found."));
         user.getPosts().remove(post);
         return ("You have removed post " + postId + "successfully!");
+    }
+
+    public PostInfoDTO uploadVideoToPost(int userId, String title, String description,
+                                         String location, int categoryId, MultipartFile video,
+                                         MultipartFile image1, MultipartFile image2, MultipartFile image3) {
+        //todo validate : SPRING
+        Post post = Post.builder()
+                .owner(userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found.")))
+                .title(title)
+                .description(description)
+                .location(location)
+                .category(categoryService.getByCategoryId(categoryId))
+                .dateCreated(LocalDateTime.now())
+                .build();
+        postRepository.save(post);
+        return mapper.map(post, PostInfoDTO.class);
     }
 }
 

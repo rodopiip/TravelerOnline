@@ -33,27 +33,22 @@ public class PostController extends AbstractController{
         //todo sort
         return postService.getPosts();
     }
-    //VERSION 1
-    public void/*PostInfoDTO*/ addPost(@RequestBody CreatePostDTO postInfoWithoutOwnerDTO,
-                                       HttpSession s,
-                                       @RequestBody List<MultipartFile> images,
-                                       @RequestBody MultipartFile video){
-        //get user id from session todo
-        //postService.addPost(postInfoWithoutOwnerDTO, getLoggedId(s));//question: are media files needed?
-        return;
+    @PostMapping("/posts")
+    public PostInfoDTO uploadVideoToPost(@RequestParam("title") String title,
+                                         @RequestParam("description") String description,
+                                         @RequestParam("location") String location,
+                                         @RequestParam("categoryId") int categoryId,
+                                         @RequestParam("video") MultipartFile video,
+                                         @RequestParam("image1") MultipartFile image1,
+                                         @RequestParam("image2") MultipartFile image2,
+                                         @RequestParam("image3") MultipartFile image3,
+                                         HttpSession s){
+        int userId = getLoggedId(s);
+        logger.debug(userId + " created a post");
+        logger.warn("WEIRD");
+        return postService.uploadVideoToPost(userId, title, description, location, categoryId,
+                                            video, image1, image2, image3);
     }
-    @PostMapping(value = "/posts")
-    //VERSION 2
-    public PostInfoDTO addPost(){}
-    @Transactional
-    @PostMapping("/posts/{postId}")
-    public PostInfoDTO updatePost(@PathVariable("postId") int postId, @RequestBody PostInfoDTO postInfoDTO, HttpSession s){
-
-        return postService.updatePost(postId, postInfoDTO, getLoggedId(s));//todo service
-    }
-
-    //delete post - localhost:3333/posts/{postId}
-    @Transactional//
     @DeleteMapping("/posts/{postId}")
     public String deletePost(@PathVariable("postId") int postId, HttpSession s){
         int userId = getLoggedId(s);

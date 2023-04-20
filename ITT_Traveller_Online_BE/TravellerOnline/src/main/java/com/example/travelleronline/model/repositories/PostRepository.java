@@ -18,7 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     runtime query derivation from method names
      */
     public Optional<Post> findById(int id);
-    public List<Post> getAll();//todo add criteria
+//    public List<Post> getAll();//todo add criteria
     public List<Post> findByOwnerId(int ownerId);
     public void deleteById(int postId);
 }

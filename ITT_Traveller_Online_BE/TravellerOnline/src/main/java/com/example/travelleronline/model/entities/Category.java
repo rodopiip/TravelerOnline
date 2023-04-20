@@ -16,9 +16,4 @@ public class Category {
 
     @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "keywords")
-    private String keywords;
-
-    //getters and setters
 }
