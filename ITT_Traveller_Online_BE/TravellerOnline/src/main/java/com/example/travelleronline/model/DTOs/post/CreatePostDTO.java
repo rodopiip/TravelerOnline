@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreatePostDTO {
-    private Integer id;
-    private User owner;
+    private Integer id;//question: autoincrement?
+    private int ownerId;
     //private int ownerId;//question: int ownerId OR User owner???
     private String title;
     private String description;

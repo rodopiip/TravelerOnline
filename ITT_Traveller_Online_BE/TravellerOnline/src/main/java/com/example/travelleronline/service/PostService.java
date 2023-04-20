@@ -5,14 +5,17 @@ import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
+import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.repositories.PostRepository;
 import com.example.travelleronline.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService extends AbstractService{
@@ -20,6 +23,8 @@ public class PostService extends AbstractService{
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;//data base
+    @Autowired
+    private MediaService mediaService;
 
     //add post
     public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
@@ -87,52 +92,43 @@ public class PostService extends AbstractService{
         //save
         MediaService.upload();//insert parameters into upload method
          */
-<<<<<<< HEAD
 
-=======
-        //MediaService.upload();//insert parameters into upload method
-        Post p = mapper.map(newPost, Post.class);
-        postRepository.save(p);
-        return mapper.map(p, PostInfoDTO.class);
->>>>>>> master
+//        //MediaService.upload();//insert parameters into upload method
+//        Post p = mapper.map(newPost, Post.class);
+//        postRepository.save(p);
+//        return mapper.map(p, PostInfoDTO.class);
+
     }//todo resolve
-=======
-    }
->>>>>>> f232377eec16f745e79bb65612b867f2ea4df1fd
 
-    //get post by post_id
     public PostInfoDTO getPostById(int id) {
-        Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException(Util.POST_NOT_FOUND));//todo resolve
-        return PostInfoDTO
-                .builder()
-                .id(post.getId())
-                .owner(post.getOwner())//todo
-                .title(post.getTitle())
-                .//todo
+        Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
+        PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
+        return postInfoDTO;
     }
 
-    //get posts by user_id
-<<<<<<< HEAD
-    public List<PostInfoDTO> getUserPosts(HttpSession session) {
-        int userId = getUserId(session);
-        //todo
-=======
-    public List<PostInfoDTO> getUserPosts(int userID) {
->>>>>>> f232377eec16f745e79bb65612b867f2ea4df1fd
-        return null;
+    public List<PostInfoDTO> getPosts() {//todo criteria
+        List<Post> posts = postRepository.getAll();
+        return posts
+                .stream()
+                .map(p -> mapper.map(p, PostInfoDTO.class))
+                .collect(Collectors.toList());
     }
 
-    //get all posts (for newsfeed)
-    public List<PostInfoDTO> getPosts() {
-        return null;
+    public List<PostInfoDTO> getUserPosts(int loggedId) {
+        List<Post> posts = postRepository.findByOwnerId(loggedId);
+        return posts
+                .stream()
+                .map(post -> mapper.map(post, PostInfoDTO.class))
+                .collect(Collectors.toList());
     }
 
-    //update post
-    public PostInfoDTO updatePost(int postId, PostInfoDTO postInfoDTO) {
-        return null;
-    }
-
-    //delete post
-    public void deletePost(int id) {
+    public String deletePost(int postId, int userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->new BadRequestException("User not found."));
+        Post post = postRepository.findById(postId).orElseThrow(()->new BadRequestException("Post not found."));
+        user.getPosts().remove(post);
+        return ("You have removed post " + postId + "successfully!");
     }
 }
+
+
+

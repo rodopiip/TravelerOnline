@@ -4,6 +4,7 @@ import com.example.travelleronline.model.entities.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,5 +17,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     method implementation based on method names:
     runtime query derivation from method names
      */
-    Optional<Post> findById(int id);
+    public Optional<Post> findById(int id);
+    public List<Post> getAll();//todo add criteria
+    public List<Post> findByOwnerId(int ownerId);
+    public void deleteById(int postId);
 }
