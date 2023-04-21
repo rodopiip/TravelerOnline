@@ -2,11 +2,9 @@ package com.example.travelleronline.model.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -55,10 +53,11 @@ public class Post {
     //todo constraint
     private LocalDateTime dateCreated;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)//todo cascade delete
+    private List<Image> images;
+
     //private List<Image> images;
 
-
-    //perhu:
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<UserSavePost> savedByUsers = new HashSet();
 

@@ -1,13 +1,10 @@
 package com.example.travelleronline.controllers;
 
-import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.service.PostService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,19 +32,19 @@ public class PostController extends AbstractController{
         return postService.getPosts();
     }
     @PostMapping("/posts")
-    public PostInfoDTO uploadVideoToPost(@RequestParam("title") String title,
-                                         @RequestParam("description") String description,
-                                         @RequestParam("location") String location,
-                                         @RequestParam("categoryId") int categoryId,
-                                         @RequestParam("video") MultipartFile video,
-                                         @RequestParam("image1") MultipartFile image1,
-                                         @RequestParam("image2") MultipartFile image2,
-                                         @RequestParam("image3") MultipartFile image3,
-                                         HttpSession s){
+    public PostInfoDTO uploadPost(@RequestParam("title") String title,
+                                  @RequestParam("description") String description,
+                                  @RequestParam("location") String location,
+                                  @RequestParam("categoryId") int categoryId,
+                                  @RequestParam("video") MultipartFile video,
+                                  @RequestParam("image1") MultipartFile image1,
+                                  @RequestParam("image2") MultipartFile image2,
+                                  @RequestParam("image3") MultipartFile image3,
+                                  HttpSession s){
         int userId = getLoggedId(s);
-        logger.debug(userId + " created a post");
-        logger.warn("WEIRD");
-        return postService.uploadVideoToPost(userId, title, description, location, categoryId,
+        //logger.debug(userId + " created a post");
+        //logger.warn("WEIRD");
+        return postService.uploadPost(userId, title, description, location, categoryId,
                                             video, image1, image2, image3);
     }
     @DeleteMapping("/posts/{postId}")

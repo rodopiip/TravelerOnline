@@ -1,21 +1,17 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.Util;
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.repositories.PostRepository;
-import com.example.travelleronline.model.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +21,6 @@ public class PostService extends AbstractService{
     private PostRepository postRepository;//data base
     @Autowired
     private CategoryService categoryService;
-    @Autowired
-    private MediaService mediaService;
 
     //add post
     public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
@@ -101,13 +95,7 @@ public class PostService extends AbstractService{
 //        return mapper.map(p, PostInfoDTO.class);
 
     }//todo resolve
-
-    public PostInfoDTO getPostById(int id) {
-        Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
-        PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
-        return postInfoDTO;
-    }
-
+    //todo Pageable
     public List<PostInfoDTO> getPosts() {//todo criteria
         return null;
 //        List<Post> posts = postRepository.getAll();
@@ -116,7 +104,12 @@ public class PostService extends AbstractService{
 //                .map(p -> mapper.map(p, PostInfoDTO.class))
 //                .collect(Collectors.toList());
     }
-
+    public PostInfoDTO getPostById(int id) {
+        Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
+        PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
+        return postInfoDTO;
+    }
+    //todo Pageable + connect to comments: OneToMany List<Comments>
     public List<PostInfoDTO> getUserPosts(int loggedId) {
         List<Post> posts = postRepository.findByOwnerId(loggedId);
         return posts
@@ -132,10 +125,12 @@ public class PostService extends AbstractService{
         return ("You have removed post " + postId + "successfully!");
     }
 
-    public PostInfoDTO uploadVideoToPost(int userId, String title, String description,
-                                         String location, int categoryId, MultipartFile video,
-                                         MultipartFile image1, MultipartFile image2, MultipartFile image3) {
+    public PostInfoDTO uploadPost(int userId, String title, String description,
+                                  String location, int categoryId, MultipartFile video,
+                                  MultipartFile image1, MultipartFile image2, MultipartFile image3) {
         //todo validate : SPRING
+        String videoUrl = MediaService.uploadMedia(video);
+
         Post post = Post.builder()
                 .owner(userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found.")))
                 .title(title)
@@ -143,6 +138,7 @@ public class PostService extends AbstractService{
                 .location(location)
                 .category(categoryService.getByCategoryId(categoryId))
                 .dateCreated(LocalDateTime.now())
+                .videoUrl(videoUrl)
                 .build();
         postRepository.save(post);
         return mapper.map(post, PostInfoDTO.class);
