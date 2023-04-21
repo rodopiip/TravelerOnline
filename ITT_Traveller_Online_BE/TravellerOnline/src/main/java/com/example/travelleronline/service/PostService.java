@@ -147,6 +147,10 @@ public class PostService extends AbstractService{
         postRepository.save(post);
         return mapper.map(post, PostInfoDTO.class);
     }
+
+    public Post testPost() {
+        return postRepository.findById(3).get();
+    }
 }
 
 

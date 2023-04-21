@@ -3,13 +3,11 @@ package com.example.travelleronline.model.entities;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -77,55 +75,14 @@ public class User {
     @ManyToMany(mappedBy = "subscribers")
     private Set<User> subscribedTo=new HashSet<>();
 
-
-
-
-
-    //list<Post>//created posts
-    //DILEMA
-    @OneToMany(mappedBy = "owner")//map list by exact column name in db
-    private List<Post> posts;
-    //list<Post>//saved posts
-    //list<UserWithoutPasswordDTO>//subscribedToList
-    //list<UserWithoutPasswordDTO>//subscribersList
-
-
-
-    /*
-    //owning side
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner")
     private List<Post> posts;
 
-    //owning side
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
-    */
-    //don't forget subscribers
-    /*
-     @ManyToMany
-    @JoinTable(
-            name = "users_subscribed_to_users",
-            joinColumns = @JoinColumn(name = "subscribed_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
-    )
-    private Set<User> subscribers = new HashSet<>();
-     */
-    /*
-    @ManyToMany(mappedBy = "subscribers")
-    private Set<User> subscribedTo = new HashSet<>();
-     */
-    /*
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id;
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserSavePost> savedPosts = new HashSet<>();
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-     */
+
+
+
+
 }

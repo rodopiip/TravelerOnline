@@ -3,22 +3,29 @@ package com.example.travelleronline.model.entities;
 import com.example.travelleronline.model.entities.compositePKeys.UserAndPostCPK;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@IdClass(UserAndPostCPK.class)
 @Table(name = "users_save_posts")
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserSavePost {
+    @EmbeddedId
+    private UserAndPostCPK id;
 
-    @Id
+    @MapsId("id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Id
+    @MapsId("id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
     private Post post;
+
+    public UserSavePost(User user, Post post) {
+        this.user = user;
+        this.post = post;
+        this.id = new UserAndPostCPK(user.getId(), post.getId());
+    }
 }

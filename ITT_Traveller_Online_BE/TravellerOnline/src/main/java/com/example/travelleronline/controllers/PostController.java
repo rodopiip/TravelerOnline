@@ -2,6 +2,7 @@ package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
+import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -54,4 +55,10 @@ public class PostController extends AbstractController{
         int userId = getLoggedId(s);
         return postService.deletePost(postId, userId);
     }
+
+    @PostMapping("/test/posts")
+    public Post returnPost(){
+        return postService.testPost();
+    }
+
 }

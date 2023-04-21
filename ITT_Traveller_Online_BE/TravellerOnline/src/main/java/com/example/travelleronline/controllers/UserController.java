@@ -1,10 +1,13 @@
 package com.example.travelleronline.controllers;
 
+import com.example.travelleronline.model.DTOs.bookmark.UserToPostDTO;
 import com.example.travelleronline.model.DTOs.user.SearchUDTO;
 import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
 import com.example.travelleronline.model.DTOs.user.LoginDTO;
 import com.example.travelleronline.model.DTOs.user.RegisterDTO;
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
+import com.example.travelleronline.model.entities.User;
+import com.example.travelleronline.model.entities.UserSavePost;
 import com.example.travelleronline.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -85,5 +88,17 @@ public class UserController extends AbstractController{
     //todo
 
 
+    @PostMapping("/users/bookmark/{postId}")
+    public UserToPostDTO bookmarkPost(@PathVariable int postId, HttpSession session) {
+        return userService.bookmark(getLoggedId(session), postId);
+    }
 
+    @GetMapping("/users/bookmark")
+    public List<UserToPostDTO> bookmarkList(HttpSession session) {
+        return userService.bookmarkList(getLoggedId(session));
+    }
+    @GetMapping("users/{userId}/bookmark")
+    public List<UserToPostDTO> bookmarkPost(@PathVariable int userId) {
+        return userService.bookmarkList(userId);
+    }
 }

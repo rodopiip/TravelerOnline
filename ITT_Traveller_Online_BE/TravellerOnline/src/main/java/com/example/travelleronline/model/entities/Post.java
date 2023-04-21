@@ -2,13 +2,14 @@ package com.example.travelleronline.model.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-
+import lombok.*;
 
 
 @Entity
@@ -16,6 +17,8 @@ import lombok.Setter;
 @Setter
 @Table(name = "posts")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Post {
 
     @Id
@@ -53,4 +56,10 @@ public class Post {
     private LocalDateTime dateCreated;
 
     //private List<Image> images;
+
+
+    //perhu:
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private Set<UserSavePost> savedByUsers = new HashSet();
+
 }

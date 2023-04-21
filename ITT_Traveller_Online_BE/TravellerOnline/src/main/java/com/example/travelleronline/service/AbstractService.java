@@ -1,5 +1,6 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.model.repositories.PostRepository;
 import com.example.travelleronline.model.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,5 +13,8 @@ public abstract class AbstractService {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected PostRepository postRepository;
 
 }

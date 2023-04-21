@@ -1,10 +1,14 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.model.DTOs.bookmark.UserToPostDTO;
 import com.example.travelleronline.model.DTOs.user.*;
+import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
+import com.example.travelleronline.model.entities.UserSavePost;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.repositories.UserRepository;
 
+import com.example.travelleronline.model.repositories.UserSavePostRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +22,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService extends AbstractService{
-
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private ValidationService validator;
+    @Autowired
+    private UserSavePostRepository bookmarkRepository;
 
     //BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
 
@@ -176,4 +179,27 @@ public class UserService extends AbstractService{
         u.getSubscribedTo().forEach(user -> list.add(mapper.map(user,UserWithoutPassDTO.class)));
         return list;
     }
+
+
+    public UserToPostDTO bookmark(int userId, int postId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        Optional<UserSavePost> userSavePost = bookmarkRepository.
+                findByUserIdAndPostId(userId, postId);
+        if(userSavePost.isPresent()){
+            bookmarkRepository.delete(userSavePost.get());
+            return mapper.map(userSavePost.get(),UserToPostDTO.class);
+        }else {
+            UserSavePost newBookmark = new UserSavePost(user, post);
+            return mapper.map(bookmarkRepository.save(newBookmark),UserToPostDTO.class);
+        }
+    }
+    public List<UserToPostDTO> bookmarkList(int loggedId) {
+        return getUserFromId(loggedId).getSavedPosts().stream()
+                .map( aBookmark ->mapper.map(aBookmark, UserToPostDTO.class))
+                .collect(Collectors.toList());
+        //maybe return only post_id?
+    }
+
 }

@@ -2,10 +2,9 @@ package com.example.travelleronline.model.entities.compositePKeys;
 
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -16,21 +15,14 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@Embeddable
 public class UserAndPostCPK implements Serializable {
-    private User user;
-    private Post post;
+    @Column(name = "user_id")
+    private int userId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserAndPostCPK that = (UserAndPostCPK) o;
-        return Objects.equals(user, that.user) && Objects.equals(post, that.post);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(user, post);
-    }
+    @Column(name = "post_id")
+    private int postId;
 
 }
