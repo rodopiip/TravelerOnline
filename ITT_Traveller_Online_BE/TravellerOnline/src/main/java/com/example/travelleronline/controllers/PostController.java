@@ -42,10 +42,10 @@ public class PostController extends AbstractController{
                                   @RequestParam("image3") MultipartFile image3,
                                   HttpSession s){
         int userId = getLoggedId(s);
-        //logger.debug(userId + " created a post");
-        //logger.warn("WEIRD");
         return postService.uploadPost(userId, title, description, location, categoryId,
-                                            video, image1, image2, image3);
+                video, image1, image2, image3);
+        //logger.debug(userId + " created a post");todo refactor
+        //logger.warn("WEIRD");todo refactor
     }
     @DeleteMapping("/posts/{postId}")
     public String deletePost(@PathVariable("postId") int postId, HttpSession s){

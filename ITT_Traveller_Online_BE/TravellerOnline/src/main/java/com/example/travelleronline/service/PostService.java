@@ -2,15 +2,19 @@ package com.example.travelleronline.service;
 
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
+import com.example.travelleronline.model.entities.Image;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
+import com.example.travelleronline.model.repositories.ImageRepository;
 import com.example.travelleronline.model.repositories.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +25,8 @@ public class PostService extends AbstractService{
     private PostRepository postRepository;//data base
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired ImageRepository imageRepository;
 
     //add post
     public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
@@ -124,13 +130,12 @@ public class PostService extends AbstractService{
         user.getPosts().remove(post);
         return ("You have removed post " + postId + "successfully!");
     }
-
+    @Transactional
     public PostInfoDTO uploadPost(int userId, String title, String description,
                                   String location, int categoryId, MultipartFile video,
                                   MultipartFile image1, MultipartFile image2, MultipartFile image3) {
         //todo validate : SPRING
         String videoUrl = MediaService.uploadMedia(video);
-
         Post post = Post.builder()
                 .owner(userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found.")))
                 .title(title)
@@ -141,7 +146,18 @@ public class PostService extends AbstractService{
                 .videoUrl(videoUrl)
                 .build();
         postRepository.save(post);
+        List <MultipartFile> images = List.of(image1, image2, image3);
+        setImages(post, images);
         return mapper.map(post, PostInfoDTO.class);
+    }
+    public void setImages(Post post, List<MultipartFile> images){
+        for(MultipartFile imageRaw : images){
+            Image image = Image.builder()
+                    .url(MediaService.uploadMedia(imageRaw))
+                    .post(post)
+                    .build();
+            imageRepository.save(image);//todo refactor: sql native @Query for simultaneous MultipartFile db insertion
+        }
     }
 
     public Post testPost() {

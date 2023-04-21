@@ -76,18 +76,6 @@ public class UserController extends AbstractController{
         return userService.getSubscribedTo(subscriber);
     }
 
-    //USER-POST MAPPINGS
-
-    //get saved posts by user - localhost:3333/users/saved-posts
-    //todo
-
-    //add saved post - localhost:3333/users/saved-posts
-    //todo
-
-    //delete saved post - localhost:3333/users/saved-posts/{postId}
-    //todo
-
-
     @PostMapping("/users/bookmark/{postId}")
     public UserToPostDTO bookmarkPost(@PathVariable int postId, HttpSession session) {
         return userService.bookmark(getLoggedId(session), postId);
