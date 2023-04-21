@@ -33,42 +33,7 @@ public class PostService extends AbstractService{
         //1. validate post info with static validation service methods
         //todo - like User attributes validation
 
-        /*
-        - 1.1. title is shorter than 5 symbols -> Bad request : msg "title is mandatory"
-        - 1.2. description is shorter than 5 symbols -> Bad request : msg "bad request message"
-        - 1.3. title and description have to be not null (mandatory field) -> Bad request : msg "bad request message"
-        - 1.4. validation for images (check if images exist) todo
-         */
-
-        //1.1
-        //get object from newPostDTO object
-        /*
-        if (!validator.methodName1(object)){
-            throw new BadRequestException("Title should be at least one symbol long.");//todo
-        }
-
-        //1.2
-        //get object from newPostDTO object
-        if (!validator.methodName2(object)){
-            throw new BadRequestException("Description is shorter than 5 symbols.");//todo
-        }
-
-        //1.3
-        //get object from newPostDTO object
-        if (!validator.methodName3(object1, object2)){
-            throw new BadRequestException("No image uploaded");//todo
-        }
-
-        //1.4
-        //get object from newPostDTO object
-        if (!validator.methodName4(object)){
-            throw new BadRequestException("insert appropriate message..");//todo
-        }
-        */
         //2. get logged user
-
-        //todo for Pesho: findBy(int id) need to return Optional<User> for
-        // the orElseThrow() method to compile
         User user = userRepository.findById(loggedId).orElseThrow(() -> new RuntimeException("User not found."));
 
         //3. create post entity
@@ -85,21 +50,6 @@ public class PostService extends AbstractService{
         PostInfoDTO p = mapper.map(post, PostInfoDTO.class);
         return p;
 
-        /*
-        //stream for each image upload
-        //save each each image (postId + url from upload method)
-        //check if image upload is null
-
-        //upload single video
-        //save
-        MediaService.upload();//insert parameters into upload method
-         */
-
-//        //MediaService.upload();//insert parameters into upload method
-//        Post p = mapper.map(newPost, Post.class);
-//        postRepository.save(p);
-//        return mapper.map(p, PostInfoDTO.class);
-
     }//todo resolve
     //todo Pageable
     public List<PostInfoDTO> getPosts() {//todo criteria
@@ -112,9 +62,16 @@ public class PostService extends AbstractService{
     }
     public PostInfoDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
+
+        List<String> imagesUrls = imageRepository.findAllByPost_Id(id).stream()
+                .map(image -> image.get().getUrl())
+                .collect(Collectors.toList());
         PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
+        postInfoDTO.setImageUrls(imagesUrls);
         return postInfoDTO;
     }
+    //todo getPostWithCommentsById
+//    public PostWithCommentsDTO getPostWithCommentsById(int id){return null;}
     //todo Pageable + connect to comments: OneToMany List<Comments>
     public List<PostInfoDTO> getUserPosts(int loggedId) {
         List<Post> posts = postRepository.findByOwnerId(loggedId);
@@ -134,7 +91,14 @@ public class PostService extends AbstractService{
     public PostInfoDTO uploadPost(int userId, String title, String description,
                                   String location, int categoryId, MultipartFile video,
                                   MultipartFile image1, MultipartFile image2, MultipartFile image3) {
-        //todo validate : SPRING
+        //
+        /*
+        todo validate : SPRING
+         - 1.1. title is shorter than 5 symbols -> Bad request : msg "title is mandatory"
+         - 1.2. description is shorter than 5 symbols -> Bad request : msg "bad request message"
+         - 1.3. title and description have to be not null (mandatory field) -> Bad request : msg "bad request message"
+         - 1.4. validation for images (check if images exist) todo
+         */
         String videoUrl = MediaService.uploadMedia(video);
         Post post = Post.builder()
                 .owner(userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found.")))

@@ -1,15 +1,14 @@
 package com.example.travelleronline.model.DTOs.post;
 
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 //refactor: use record instead of pojo?
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,6 +23,8 @@ public class PostInfoDTO {
     private String additionalInfo;
     private Integer categoryId;//question: Integer categoryId OR Category category?
     private String videoUrl;//ok
+    private List<String> imageUrls;
+    private List<String> comments;//todo
     private LocalDateTime dateCreated;//ok
 
 }

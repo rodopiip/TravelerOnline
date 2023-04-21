@@ -75,7 +75,7 @@ public class User {
     @ManyToMany(mappedBy = "subscribers")
     private Set<User> subscribedTo=new HashSet<>();
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

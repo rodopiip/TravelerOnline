@@ -21,11 +21,10 @@ public class MediaController extends AbstractController{
     public UserWithoutPassDTO uploadProfilePic(@RequestParam("file")MultipartFile file, HttpSession session){
         return mediaService.changeProfilePic(file,getLoggedId(session));
     }
-    @SneakyThrows
-    @GetMapping("/media/{filename}")
+    @SneakyThrows//question: трябва ли ни?
+    @GetMapping("/media/{filename:.+}")
     public void downloadMedia(@PathVariable("filename") String fileName, HttpServletResponse response){
-        File img=mediaService.downloadMedia(fileName);
-        Files.copy(img.toPath(),response.getOutputStream());
-        return;
+        File responseFile=mediaService.downloadMedia(fileName);
+        Files.copy(responseFile.toPath(),response.getOutputStream());
     }
 }

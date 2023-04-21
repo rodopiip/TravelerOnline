@@ -26,14 +26,13 @@ public class MediaService extends AbstractService{
     @SneakyThrows
     public static String uploadMedia(MultipartFile file){
         String ext= FilenameUtils.getExtension(file.getOriginalFilename());
-        String uplName= UUID.randomUUID()+"."+ext;
-
+        String uploadName= UUID.randomUUID()+"."+ext;
         if(!folder.exists()){
             folder.mkdirs();
         }
-        File upload=new File(folder,uplName);
-        Files.copy(file.getInputStream(),upload.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        return folder.getName()+File.separator+ upload.getName();
+        File fileForUpload=new File(folder,uploadName);
+        Files.copy(file.getInputStream(),fileForUpload.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return folder.getName()+File.separator+ fileForUpload.getName();
     }
     public static Boolean deleteMedia(String URL){;
         File toDelete=new File(folder,URL);

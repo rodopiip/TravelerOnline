@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -35,12 +38,13 @@ public class Comment {
 
     @Column(name = "user_id", nullable = false)
     private Integer userId;
-
+    @Size(min = 1, max = 300)
     @Column(name = "content", nullable = false, length = 255)
     private String content;
 
-    @Column(name = "post_id")
-    private Integer postId;
+    @ManyToOne(fetch =  FetchType.LAZY)
+    @JoinColumn(name = "post_id", referencedColumnName = "id", nullable = false)
+    private Post post;
 
     @Column(name = "super_comment_id")
     private Integer superCommentId;
@@ -66,6 +70,5 @@ public class Comment {
                                         //todo:maybe refactor the delete service, no longer needs to be with recursion
              )
     private Set<Comment> replies=new HashSet<>();
-
 */
 }

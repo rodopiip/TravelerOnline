@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContentDTO {
-    String content;
-
+public class CommentOfCommentDTO {
+    private int superCommentId;
+    private int userId;
+    private String content;
 }

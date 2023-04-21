@@ -34,7 +34,7 @@ public class CommentService extends AbstractService{
             Comment comment = Comment.builder()
                     .userId(userId)
                     .content(contentData.getContent())
-                    .postId(postId)
+                    .post(postRepository.findById(postId).get())
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .superCommentId(null)
@@ -56,11 +56,10 @@ public class CommentService extends AbstractService{
                     //.parentComment(commentRepository.getReferenceById(commentedCommentId))
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
-                    .postId(null)
                     .build();
             System.out.println(comment);
             return commentRepository.save(comment);
-        }catch (RuntimeException e){
+        }catch (RuntimeException e){//todo spring validation
             throw new BadSaveToDBException("Cannot respond to that comment, because it doesn't exist");
         }
     }
@@ -68,7 +67,7 @@ public class CommentService extends AbstractService{
     public Comment update(Integer id, Comment comment) {
         Comment existingComment = findById(id);
         existingComment.setContent(comment.getContent());
-        existingComment.setPostId(comment.getPostId());
+//        existingComment.setPostId(comment.getPostId())//todo
         existingComment.setSuperCommentId(comment.getSuperCommentId());
         existingComment.setRating(comment.getRating());
         return commentRepository.save(existingComment);
