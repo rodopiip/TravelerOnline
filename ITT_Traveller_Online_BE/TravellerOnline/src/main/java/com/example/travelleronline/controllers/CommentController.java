@@ -18,16 +18,19 @@ public class CommentController extends AbstractController {
     private CommentService commentService;
 
     //create
+    //todo : suggestion : : refactor : reply to post
     @PostMapping("/posts/{id}/comments")
     public ContentDTO commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession session) {
         return commentService.saveByPost(contentData,postId, getLoggedId(session));
     }
+    //todo : suggestion : refactor: reply to comment
     @PostMapping("/comments/{id}/comments")
     public ContentDTO commentComment(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
         return commentService.saveByComment(contentData,commentId, getLoggedId(session));
     }
 
     //delete
+    //todo : suggestion : refactor: deleteByUserSessionId
     @DeleteMapping("/comments/{id}")
     public ContentDTO deleteUserBySessionUserId(HttpSession session,@PathVariable("id") int commentId) {
         return commentService.deleteById(commentId,getLoggedId(session));
