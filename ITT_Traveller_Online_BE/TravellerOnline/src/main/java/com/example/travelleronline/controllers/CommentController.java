@@ -1,11 +1,11 @@
 package com.example.travelleronline.controllers;
 
+import com.example.travelleronline.model.DTOs.comment.CommentDTO;
 import com.example.travelleronline.model.DTOs.comment.ContentDTO;
 import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.service.CommentService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,40 +17,44 @@ public class CommentController extends AbstractController {
     @Autowired
     private CommentService commentService;
 
+    //create
     @PostMapping("/posts/{id}/comments")
-    public Comment commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession session) {
+    public ContentDTO commentPost(@PathVariable("id") int postId, @RequestBody ContentDTO contentData, HttpSession session) {
         return commentService.saveByPost(contentData,postId, getLoggedId(session));
     }
     @PostMapping("/comments/{id}/comments")
-    public Comment commentComment(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
+    public ContentDTO commentComment(@PathVariable("id") int commentId, @RequestBody ContentDTO contentData, HttpSession session) {
         return commentService.saveByComment(contentData,commentId, getLoggedId(session));
     }
-    @Transactional
+
+    //delete
     @DeleteMapping("/comments/{id}")
-    public void deleteUserBySessionUserId(HttpSession session,@PathVariable("id") int commentId) {
-        getLoggedId(session);
-        commentService.deleteById(commentId);
+    public ContentDTO deleteUserBySessionUserId(HttpSession session,@PathVariable("id") int commentId) {
+        return commentService.deleteById(commentId,getLoggedId(session));
     }
+
+    //get
     @GetMapping("/comments/{id}")
-    public Comment getCommentById(@PathVariable("id") int id) {
-        // specific comment || maybe make it all comments of a comment
-        Comment comment = commentService.findById(id);
-        return comment;
+    public CommentDTO getCommentById(@PathVariable("id") int id) {
+        return commentService.getCommentWithChildComments(id);
     }
-    @GetMapping("/comments/{id}/comments")
-    public List<Comment> getAllCommentsOfComment(@PathVariable("id") int id) {
-        return commentService.getAllSubComments(id);
-    }
+
     @GetMapping("/posts/{postId}/comments")
-    public List<Comment> getAllCommentsOfPost(@PathVariable("postId") int postId, HttpSession s) {
-        try {
-            return commentService.getAllPostComments(postId);
-        }catch(Exception e) {
-            throw new NotFoundException("Post does not exist");
-        }
+    public List<CommentDTO> getAllCommentsOfPost(@PathVariable("postId") int postId, HttpSession s) {
+        return commentService.getAllPostComments(postId);
     }
     @GetMapping("/comments")
-    public List<Comment> getAllCommentsOfUser(HttpSession session) {
+    public List<CommentDTO> getAllCommentsOfLoggedUser(HttpSession session) {
         return commentService.getAllCommentOfUser(getLoggedId(session));
     }
+    @GetMapping("/users/{userId}/comments")
+    public List<CommentDTO> getAllCommentsOfUser(@PathVariable("userId") int userId) {
+        return commentService.getAllCommentOfUser(userId);
+    }
+    //edit
+    @PostMapping("/comments/{commentId}/edit")
+    public ContentDTO editComment(@PathVariable("commentId") int commentId,@RequestBody ContentDTO contentData,HttpSession s){
+        return commentService.edit(commentId,contentData,getLoggedId(s));
+    }
+
 }

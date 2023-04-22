@@ -1,15 +1,22 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.model.DTOs.comment.CommentDTO;
 import com.example.travelleronline.model.DTOs.comment.ContentDTO;
 import com.example.travelleronline.model.entities.Comment;
+import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.BadSaveToDBException;
+import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.model.repositories.CommentRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService extends AbstractService{
@@ -17,94 +24,94 @@ public class CommentService extends AbstractService{
     @Autowired
     private CommentRepository commentRepository;
 
-    public List<Comment> findAll() {
-        return commentRepository.findAll();
+    public CommentDTO getCommentWithChildComments(Integer commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
+        return mapCommentWithReplies(comment);
     }
 
-    public Comment findById(Integer id) {
+    private CommentDTO mapCommentWithReplies(Comment comment) {
+        CommentDTO commentDTO = mapper.map(comment, CommentDTO.class);
+        commentDTO.setParentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null);
 
-        Optional<Comment> commentOptional = commentRepository.findById(id);
-        //todo: MAYBE WHEN GETTING A SPECIFIC COMMENT GET ALL SUB COMMENTS
-        return commentOptional.orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
+        Set<Comment> childComments = commentRepository.findAllByParentCommentId(comment.getId());
+        Set<CommentDTO> childCommentDTOs = childComments.stream()
+                .map(this::mapCommentWithReplies)
+                .collect(Collectors.toSet());
+
+        commentDTO.setChildComments(childCommentDTOs);
+        return commentDTO;
     }
 
-    public Comment saveByPost(ContentDTO contentData, int postId,int userId) {
+    public ContentDTO saveByPost(ContentDTO contentData, int postId,int userId) {
 
         try {
             Comment comment = Comment.builder()
-                    .userId(userId)
+                    .user(userRepository.findById(userId).get())
                     .content(contentData.getContent())
-                    .post(postRepository.findById(postId).get())
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
-                    .superCommentId(null)
+                    .post(postRepository.findById(postId).orElseThrow(() ->new BadRequestException("No such post exists")))
                     //.parentComment(null)
                     .build();
             System.out.println(comment);
-            return commentRepository.save(comment);
-        }catch (RuntimeException e){
-            throw new BadSaveToDBException("Cannot respond to that post, because it doesn't exist");
+            commentRepository.save(comment);
+            return mapper.map(comment,ContentDTO.class);
+        }finally {
         }
     }
-    public Comment saveByComment(ContentDTO contentData, int commentedCommentId,int userId) {
+    public ContentDTO saveByComment(ContentDTO contentData, int commentedCommentId,int userId) {
 
         try {
             Comment comment = Comment.builder()
-                    .userId(userId)
+                    .user(userRepository.findById(userId).get())
                     .content(contentData.getContent())
-                    .superCommentId(commentedCommentId)
-                    //.parentComment(commentRepository.getReferenceById(commentedCommentId))
+                    .parentComment(commentRepository.findById(commentedCommentId).
+                            orElseThrow(()-> new BadRequestException("no such comment exists")))
+//                    .post(null)
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .build();
             System.out.println(comment);
-            return commentRepository.save(comment);
-        }catch (RuntimeException e){//todo spring validation
-            throw new BadSaveToDBException("Cannot respond to that comment, because it doesn't exist");
+            return mapper.map(commentRepository.save(comment),ContentDTO.class);
+        }finally {
+
         }
     }
-
-    public Comment update(Integer id, Comment comment) {
-        Comment existingComment = findById(id);
-        existingComment.setContent(comment.getContent());
-//        existingComment.setPostId(comment.getPostId())//todo
-        existingComment.setSuperCommentId(comment.getSuperCommentId());
-        existingComment.setRating(comment.getRating());
-        return commentRepository.save(existingComment);
-    }
-
-    public Comment deleteById(int id) {
-
-        Comment toBeDeleted=findById(id);
-        deleteSubComments(toBeDeleted.getId());
-        commentRepository.delete(toBeDeleted);
-        return toBeDeleted;
-    }
-
-    public List<Comment> getAllSubComments(int commendId){
-        return commentRepository.findBySuperCommentId(commendId);
-    }
-    private void deleteSubComments(int superCommentId) {
-        List<Comment> subComments = commentRepository.findBySuperCommentId(superCommentId);
-
-        if (!subComments.isEmpty()) {
-          /* subComments.stream().forEach(
-                comment -> {
-                deleteSubComments(comment.getId());
-                commentRepository.deleteById(comment.getId());
-                });
-           */
-            for (Comment subComment : subComments) {
-                deleteSubComments(subComment.getId());
-                commentRepository.deleteById(subComment.getId());
-            }
+    @Transactional
+    public ContentDTO deleteById(int id,int userId) {
+        Comment toBeDeleted=commentRepository.findById(id).orElseThrow(()-> new BadRequestException("Does not exist"));
+        if(userId==toBeDeleted.getUser().getId()){
+            commentRepository.delete(toBeDeleted);
+            return mapper.map(toBeDeleted, ContentDTO.class);
+        }else{
+            throw new UnauthorizedException("You are not the creator of this comment");
         }
     }
-    public List<Comment> getAllPostComments(int postId) {
-        return commentRepository.findAllByPostId(postId);
+    public List<CommentDTO> getAllPostComments(int postId) {
+        return commentRepository.findAllByPostId(postId)
+                .stream()
+                .map(comment -> mapper.map(comment, CommentDTO.class))
+                .collect(Collectors.toList());
     }
 
-    public List<Comment> getAllCommentOfUser(int userId){
-        return commentRepository.findAllByUserId(userId);
+    public List<CommentDTO> getAllCommentOfUser(int userId){
+        if(!userRepository.existsById(userId)) throw new BadRequestException("User does not exist");
+        return commentRepository.findAllByUserId(userId)
+                .stream()
+                .map(comment -> mapper.map(comment, CommentDTO.class))
+                .collect(Collectors.toList());
     }
+
+    public ContentDTO edit(int commentId, ContentDTO contentData, int loggedId) {
+        Comment existingComment = commentRepository.findById(commentId)
+                .orElseThrow(()->new BadRequestException("No such comment"));
+        if(loggedId==existingComment.getUser().getId()){
+            existingComment.setContent(contentData.getContent());
+        }else {
+            throw new UnauthorizedException("You are not the owner of this comment.");
+        }
+        return mapper.map(commentRepository.save(existingComment), ContentDTO.class);
+    }
+
 }
