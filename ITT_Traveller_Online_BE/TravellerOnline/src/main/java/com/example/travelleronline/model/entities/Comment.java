@@ -31,8 +31,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-//    @Column(name = "user_id", nullable = false)
-//    private Integer userId;
     @Size(min = 1, max = 300)
     @Column(name = "content", nullable = false, length = 255)
     private String content;
@@ -49,8 +47,7 @@ public class Comment {
     @JoinColumn(name = "super_comment_id")
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
-    //@Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.LAZY /*cascade = CascadeType.ALL this is in the database constrain*/)
     private Set<Comment> childComments = new HashSet<>();
 
     @Column(name = "rating", nullable = false)

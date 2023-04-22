@@ -6,6 +6,7 @@ import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.ConstraintViolationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
@@ -39,11 +40,17 @@ public abstract class AbstractController {
         return generateErrorDTO(e, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ErrorDTO handleBadData(Exception e){
+        return generateErrorDTO(e, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleRest(Exception e){
         return generateErrorDTO(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 
     private ErrorDTO generateErrorDTO(Exception e, HttpStatus s){
         return ErrorDTO.builder()

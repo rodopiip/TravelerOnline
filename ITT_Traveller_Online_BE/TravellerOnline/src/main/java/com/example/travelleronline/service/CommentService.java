@@ -9,6 +9,7 @@ import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.model.repositories.CommentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,8 @@ public class CommentService extends AbstractService{
             System.out.println(comment);
             commentRepository.save(comment);
             return mapper.map(comment,ContentDTO.class);
-        }finally {
+        }catch (ConstraintViolationException e){
+            throw new BadRequestException("Comments can be between 1 and 300 symbols");
         }
     }
     public ContentDTO saveByComment(ContentDTO contentData, int commentedCommentId,int userId) {
@@ -74,8 +76,8 @@ public class CommentService extends AbstractService{
                     .build();
             System.out.println(comment);
             return mapper.map(commentRepository.save(comment),ContentDTO.class);
-        }finally {
-
+        }catch (ConstraintViolationException e){
+            throw new BadRequestException("Comments can be between 1 and 300 symbols");
         }
     }
     @Transactional
@@ -111,7 +113,11 @@ public class CommentService extends AbstractService{
         }else {
             throw new UnauthorizedException("You are not the owner of this comment.");
         }
-        return mapper.map(commentRepository.save(existingComment), ContentDTO.class);
+        try{
+            return mapper.map(commentRepository.save(existingComment), ContentDTO.class);
+        }catch (ConstraintViolationException e){
+            throw new BadRequestException("Comments can be between 1 and 300 symbols");
+        }
     }
 
 }
