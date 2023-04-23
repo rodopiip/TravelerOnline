@@ -4,7 +4,6 @@ import com.example.travelleronline.model.DTOs.comment.CommentDTO;
 import com.example.travelleronline.model.DTOs.comment.ContentDTO;
 import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.BadRequestException;
-import com.example.travelleronline.model.exceptions.BadSaveToDBException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.model.repositories.CommentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,7 +42,7 @@ public class CommentService extends AbstractService{
         return commentDTO;
     }
 
-    public ContentDTO saveByPost(ContentDTO contentData, int postId,int userId) {
+    public ContentDTO replyByPost(ContentDTO contentData, int postId, int userId) {
 
         try {
             Comment comment = Comment.builder()

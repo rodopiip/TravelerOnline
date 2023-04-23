@@ -1,6 +1,7 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
+import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.service.MediaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 @Tag(name = "Media Controller", description = "Endpoints for all of our media, pictures, videos and everything else that is not text.")
 @RestController
@@ -22,10 +24,14 @@ public class MediaController extends AbstractController{
     public UserWithoutPassDTO uploadProfilePic(@RequestParam("file")MultipartFile file, HttpSession session){
         return mediaService.changeProfilePic(file,getLoggedId(session));
     }
-    @SneakyThrows//question: трябва ли ни?
+
     @GetMapping("/media/{filename:.+}")
-    public void downloadMedia(@PathVariable("filename") String fileName, HttpServletResponse response){
+    public void downloadMedia(@PathVariable("filename") String fileName, HttpServletResponse response) {
         File responseFile=mediaService.downloadMedia(fileName);
-        Files.copy(responseFile.toPath(),response.getOutputStream());
+        try {
+            Files.copy(responseFile.toPath(), response.getOutputStream());
+        }catch (IOException e){
+            throw new BadRequestException("Error while loading the file");
+        }
     }
 }
