@@ -53,13 +53,19 @@ public class Post {
     //todo constraint
     private LocalDateTime dateCreated;
 
+    @Column(name = "rating")
+    private long rating;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images;
-
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<UserSavePost> savedByUsers = new HashSet();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    //todo mappedBy = ?
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Reaction>reactions;
 }

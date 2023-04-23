@@ -21,10 +21,12 @@ public class PostInfoDTO {
     private String description;//ok
     private String location;//ok : question: make a separate Location object? no.
     private String additionalInfo;
-    private Integer categoryId;//question: Integer categoryId OR Category category?
+    private Integer categoryId;
     private String videoUrl;//ok
     private List<String> imageUrls;
-    private List<String> comments;//todo
+    private List<String> comments;//question: не мисля, че този списък е нужен
     private LocalDateTime dateCreated;//ok
-
+    private long commentCount;
+    private long reactionCount;
+    private long rating;
 }

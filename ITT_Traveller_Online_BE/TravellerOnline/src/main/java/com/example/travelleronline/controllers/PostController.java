@@ -26,6 +26,7 @@ public class PostController extends AbstractController{
     public List<PostInfoDTO> getUserPosts(HttpSession session){
         return postService.getUserPosts(getLoggedId(session));//todo service
     }
+    //todo pageable
     @GetMapping("/posts")
     public List<PostInfoDTO> getPosts(){//newsfeed
         //todo Spring validation for criteria?
@@ -51,6 +52,7 @@ public class PostController extends AbstractController{
     @DeleteMapping("/posts/{postId}")
     public String deletePost(@PathVariable("postId") int postId, HttpSession s){
         int userId = getLoggedId(s);
+        //question: има ли нужда от параметър userId в `postService.deletePost(postId, userId)`?
         return postService.deletePost(postId, userId);
     }
 
@@ -58,5 +60,4 @@ public class PostController extends AbstractController{
     public Post returnPost(){
         return postService.testPost();
     }
-
 }

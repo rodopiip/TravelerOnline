@@ -6,16 +6,18 @@ import com.example.travelleronline.model.entities.Image;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
+import com.example.travelleronline.model.repositories.CommentRepository;
 import com.example.travelleronline.model.repositories.ImageRepository;
 import com.example.travelleronline.model.repositories.PostRepository;
+import com.example.travelleronline.model.repositories.ReactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +29,8 @@ public class PostService extends AbstractService{
     private CategoryService categoryService;
 
     @Autowired ImageRepository imageRepository;
+    @Autowired ReactionRepository reactionRepository;
+    @Autowired CommentRepository commentRepository;
 
     //add post
     public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
@@ -62,16 +66,19 @@ public class PostService extends AbstractService{
     }
     public PostInfoDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
-
+        PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
+        //note: images -> PostInfoDTO
         List<String> imagesUrls = imageRepository.findAllByPost_Id(id).stream()
                 .map(image -> image.get().getUrl())
                 .collect(Collectors.toList());
-        PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
         postInfoDTO.setImageUrls(imagesUrls);
+        //note: comment count -> PostInfoDTO
+        //question: count all comments and sub-comments.
+        long commentCount = getBranchedCommentCountForPost(post.getId());
+        postInfoDTO.setCommentCount(commentCount);
         return postInfoDTO;
     }
-    //todo getPostWithCommentsById
-//    public PostWithCommentsDTO getPostWithCommentsById(int id){return null;}
+
     //todo Pageable + connect to comments: OneToMany List<Comments>
     public List<PostInfoDTO> getUserPosts(int loggedId) {
         List<Post> posts = postRepository.findByOwnerId(loggedId);
@@ -126,6 +133,18 @@ public class PostService extends AbstractService{
 
     public Post testPost() {
         return postRepository.findById(3).get();
+    }
+
+    //todo
+    private int getBranchedCommentCountForPost(Integer postId) {
+        AtomicInteger commentCount = new AtomicInteger(commentRepository.countAllByPostId(postId));
+        commentRepository.findAllByPostId(postId).stream()
+                .forEach(comment ->
+                    {
+                    commentCount.addAndGet(commentRepository.countAllByParentCommentId(comment.getId()));
+                    }
+                );
+        return commentCount.get();
     }
 }
 
