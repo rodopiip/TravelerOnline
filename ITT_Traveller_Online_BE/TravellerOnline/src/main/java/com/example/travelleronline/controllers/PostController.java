@@ -60,4 +60,9 @@ public class PostController extends AbstractController{
     public Post returnPost(){
         return postService.testPost();
     }
+
+    @GetMapping("/posts/{postId}/location")
+    public String getLocationUrl(@PathVariable int postId){
+        return postService.getLocationUrl(postId);
+    }
 }

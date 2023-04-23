@@ -6,6 +6,7 @@ import com.example.travelleronline.model.entities.Image;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
+import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.repositories.CommentRepository;
 import com.example.travelleronline.model.repositories.ImageRepository;
 import com.example.travelleronline.model.repositories.PostRepository;
@@ -78,7 +79,6 @@ public class PostService extends AbstractService{
         postInfoDTO.setCommentCount(commentCount);
         return postInfoDTO;
     }
-
     //todo Pageable + connect to comments: OneToMany List<Comments>
     public List<PostInfoDTO> getUserPosts(int loggedId) {
         List<Post> posts = postRepository.findByOwnerId(loggedId);
@@ -145,6 +145,11 @@ public class PostService extends AbstractService{
                     }
                 );
         return commentCount.get();
+    }
+    public String getLocationUrl(int postId){
+        Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("No such post"));
+        String location = "https://www.google.com/maps/@" + post.getLocation();
+        return location;
     }
 }
 
