@@ -21,7 +21,7 @@ public class UserWithoutPassDTO {
     private String dateOfBirth;
     private String phoneNumber;
     private String profilePhoto;
-    private boolean isVerified;
+    private boolean verified;
     private String additionalInfo;
     private String gender;
 }

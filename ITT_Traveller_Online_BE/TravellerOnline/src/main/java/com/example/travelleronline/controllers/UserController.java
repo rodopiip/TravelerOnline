@@ -91,4 +91,11 @@ public class UserController extends AbstractController{
     public List<UserToPostDTO> bookmarkPost(@PathVariable int userId) {
         return userService.bookmarkList(userId);
     }
+
+    @GetMapping("users/validate/token/{token}")
+    public UserWithoutPassDTO bookmarkPost(@PathVariable String token) {
+        return userService.validateToken(token);
+    }
+
+
 }

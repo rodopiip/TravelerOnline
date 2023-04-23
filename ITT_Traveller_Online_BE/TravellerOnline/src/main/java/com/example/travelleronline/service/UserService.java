@@ -6,10 +6,8 @@ import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.entities.UserSavePost;
 import com.example.travelleronline.model.exceptions.BadRequestException;
-import com.example.travelleronline.model.repositories.UserRepository;
 
 import com.example.travelleronline.model.repositories.UserSavePostRepository;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -27,7 +26,20 @@ public class UserService extends AbstractService{
     @Autowired
     private UserSavePostRepository bookmarkRepository;
 
-    //BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+    @Autowired
+    private EmailService senderService;
+    public String sendToken(String userMail){
+        String token= String.valueOf(UUID.randomUUID());
+        senderService.sendEmail("thisemailisgenerated@gmail.com","Your validation token:",
+                token+"\n");
+        return token;
+    }
+    public UserWithoutPassDTO validateToken(String token) {
+        User u=userRepository.findByVerificationCode(token).orElseThrow(()->new BadRequestException("No such user"));
+        u.setVerified(true);
+        return mapper.map(userRepository.save(u),UserWithoutPassDTO.class);
+    }
+
 
     public UserWithoutPassDTO login(LoginDTO loginData){
         Optional<User> opt= Optional.ofNullable(userRepository.findByEmail(loginData.getEmail()).orElseThrow(() -> new BadRequestException("No account with that email found")));
@@ -39,8 +51,6 @@ public class UserService extends AbstractService{
 
     public UserWithoutPassDTO register(RegisterDTO regData) {
         String email= regData.getEmail();
-        //fix for different exceptions
-
         if(!validator.isValidEmail(email)){
             throw new BadRequestException("Incorrect Email");
         }
@@ -63,6 +73,9 @@ public class UserService extends AbstractService{
         }
         User u= mapper.map(regData,User.class);
         u.setPassword(validator.encodePassword(u.getPassword()));
+        u.setVerified(false);
+        u.setVerificationCode(sendToken(u.getEmail()));
+
         userRepository.save(u);
         return mapper.map(u,UserWithoutPassDTO.class);
     }
@@ -115,7 +128,6 @@ public class UserService extends AbstractService{
         }
         u.setDateOfBirth(LocalDate.parse(updateData.getDateOfBirth()));
         u.setProfilePhoto(updateData.getProfilePhoto());
-        //u.setIsVerified(updateData.isVerified());
         u.setAdditionalInfo(updateData.getAdditionalInfo());
         u.setGender(updateData.getGender());
         userRepository.save(u);
@@ -201,5 +213,6 @@ public class UserService extends AbstractService{
                 .collect(Collectors.toList());
         //maybe return only post_id?
     }
+
 
 }

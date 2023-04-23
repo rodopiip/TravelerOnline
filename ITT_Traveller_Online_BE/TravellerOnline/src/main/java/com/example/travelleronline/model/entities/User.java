@@ -48,8 +48,7 @@ public class User {
     private String profilePhoto;
 
     @Column(name = "is_verified")
-
-    private Boolean isVerified;
+    private Boolean verified=false;
 
     @Column(name = "additional_info")
     private String additionalInfo;

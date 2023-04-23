@@ -2,6 +2,7 @@ package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.ErrorDTO;
 
+import com.example.travelleronline.model.exceptions.BadEmailException;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
@@ -39,6 +40,11 @@ public abstract class AbstractController {
     public ErrorDTO handleSizeLimitExceededException(Exception e) {
         return generateErrorDTO(e, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(BadEmailException.class)
+    public ErrorDTO handleBadMail(Exception e){
+        return generateErrorDTO(e, HttpStatus.METHOD_FAILURE);
+    }
+
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorDTO handleBadData(Exception e){
