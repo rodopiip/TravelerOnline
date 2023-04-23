@@ -84,11 +84,11 @@ public class UserController extends AbstractController{
     }
 
     @GetMapping("/users/bookmark")
-    public List<UserToPostDTO> bookmarkList(HttpSession session) {
+    public List<UserToPostDTO> getBookmarkList(HttpSession session) {
         return userService.bookmarkList(getLoggedId(session));
     }
     @GetMapping("users/{userId}/bookmark")
-    public List<UserToPostDTO> bookmarkPost(@PathVariable int userId) {
+    public List<UserToPostDTO> getBookmarks(@PathVariable int userId) {
         return userService.bookmarkList(userId);
     }
 
@@ -97,5 +97,9 @@ public class UserController extends AbstractController{
         return userService.validateToken(token);
     }
 
+    @GetMapping("users/validate/newPass/{mail}")
+    public UserWithoutPassDTO resetPassword(@PathVariable String mail) {
+        return userService.resetPass(mail);
+    }
 
 }

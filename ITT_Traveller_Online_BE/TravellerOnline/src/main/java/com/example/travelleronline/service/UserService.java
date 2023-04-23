@@ -215,4 +215,12 @@ public class UserService extends AbstractService{
     }
 
 
+    public UserWithoutPassDTO resetPass(String mail) {
+        User u=userRepository.findByEmail(mail).orElseThrow(()->new BadRequestException("No user with such email"));
+        String newPass=String.valueOf(UUID.randomUUID());
+        u.setPassword(ValidationService.encodePassword(newPass));
+        senderService.sendEmail(mail,"Your new password.","Your new password is:\n"+newPass);
+        userRepository.save(u);
+        return mapper.map(u,UserWithoutPassDTO.class);
+    }
 }
