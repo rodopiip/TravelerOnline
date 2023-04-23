@@ -93,7 +93,7 @@ public class UserController extends AbstractController{
     }
 
     @GetMapping("users/validate/token/{token}")
-    public UserWithoutPassDTO bookmarkPost(@PathVariable String token) {
+    public UserWithoutPassDTO valdiateToken(@PathVariable String token) {
         return userService.validateToken(token);
     }
 
