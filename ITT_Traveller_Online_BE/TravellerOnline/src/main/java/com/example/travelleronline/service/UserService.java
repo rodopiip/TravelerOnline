@@ -25,7 +25,6 @@ public class UserService extends AbstractService{
     private ValidationService validator;
     @Autowired
     private UserSavePostRepository bookmarkRepository;
-
     @Autowired
     private EmailService senderService;
     public String sendToken(String userMail){
@@ -39,8 +38,6 @@ public class UserService extends AbstractService{
         u.setVerified(true);
         return mapper.map(userRepository.save(u),UserWithoutPassDTO.class);
     }
-
-
     public UserWithoutPassDTO login(LoginDTO loginData){
         Optional<User> opt= Optional.ofNullable(userRepository.findByEmail(loginData.getEmail()).orElseThrow(() -> new BadRequestException("No account with that email found")));
         User u=opt.get();
@@ -138,25 +135,17 @@ public class UserService extends AbstractService{
         if(subscriberId==subscribedToId){
             throw new BadRequestException("You cannot subscribe to yourself");
         }
-
         User subscriber = Optional.ofNullable(userRepository.findById(subscriberId).orElseThrow(()->new BadRequestException("No account found"))).get();;
         User subscribedTo = Optional.ofNullable(userRepository.findById(subscribedToId).orElseThrow(()->new BadRequestException("No user found"))).get();;
-
-
         if(subscriber.getSubscribedTo().contains(subscribedTo)){
-            //subscriber.getSubscribedTo().remove(subscribedTo);
             subscribedTo.getSubscribers().remove(subscriber);
         }else{
-           // subscriber.getSubscribedTo().add(subscribedTo);
             subscribedTo.getSubscribers().add(subscriber);
 
         }
-        //userRepository.save(subscriber);
         userRepository.save(subscribedTo);
         return subscribedTo.getSubscribers().size();
     }
-    //ne se raboti sys sesii,response ili request
-
     private boolean checkPassword(ChangePassDTO changeData,int userId){
         //might as well be void though
         User u=getUserFromId(userId);
@@ -213,7 +202,6 @@ public class UserService extends AbstractService{
                 .collect(Collectors.toList());
         //maybe return only post_id?
     }
-
 
     public UserWithoutPassDTO resetPass(String mail) {
         User u=userRepository.findByEmail(mail).orElseThrow(()->new BadRequestException("No user with such email"));
