@@ -6,8 +6,6 @@ import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
 import com.example.travelleronline.model.DTOs.user.LoginDTO;
 import com.example.travelleronline.model.DTOs.user.RegisterDTO;
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
-import com.example.travelleronline.model.entities.User;
-import com.example.travelleronline.model.entities.UserSavePost;
 import com.example.travelleronline.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
@@ -92,9 +90,9 @@ public class UserController extends AbstractController{
         return userService.bookmarkList(userId);
     }
 
-    @GetMapping("users/validate/token/{token}")
-    public UserWithoutPassDTO valdiateToken(@PathVariable String token) {
-        return userService.validateToken(token);
+    @GetMapping("users/validate/verCode/{token}")
+    public UserWithoutPassDTO validateVerCode(@PathVariable String token) {
+        return userService.validateVerCode(token);
     }
 
     @GetMapping("users/validate/newPass/{mail}")

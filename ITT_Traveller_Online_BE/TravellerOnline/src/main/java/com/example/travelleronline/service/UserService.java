@@ -27,14 +27,15 @@ public class UserService extends AbstractService{
     private UserSavePostRepository bookmarkRepository;
     @Autowired
     private EmailService senderService;
-    public String sendToken(String userMail){
-        String token= String.valueOf(UUID.randomUUID());
-        senderService.sendEmail("thisemailisgenerated@gmail.com","Your validation token:",
-                token+"\n");
-        return token;
+    public String sendVerCode(String userMail){
+        String verCode= String.valueOf(UUID.randomUUID());
+        senderService.sendEmail(userMail,"Your verification link:",
+                "localhost:3333/users/validate/verCode/"+verCode+"\n");
+        return verCode;
     }
-    public UserWithoutPassDTO validateToken(String token) {
-        User u=userRepository.findByVerificationCode(token).orElseThrow(()->new BadRequestException("No such user"));
+
+    public UserWithoutPassDTO validateVerCode(String verificationCode) {
+        User u=userRepository.findByVerificationCode(verificationCode).orElseThrow(()->new BadRequestException("No such user"));
         u.setVerified(true);
         return mapper.map(userRepository.save(u),UserWithoutPassDTO.class);
     }
@@ -71,7 +72,7 @@ public class UserService extends AbstractService{
         User u= mapper.map(regData,User.class);
         u.setPassword(validator.encodePassword(u.getPassword()));
         u.setVerified(false);
-        u.setVerificationCode(sendToken(u.getEmail()));
+        u.setVerificationCode(sendVerCode(u.getEmail()));
 
         userRepository.save(u);
         return mapper.map(u,UserWithoutPassDTO.class);
