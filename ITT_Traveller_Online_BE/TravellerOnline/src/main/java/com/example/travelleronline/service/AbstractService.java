@@ -17,4 +17,6 @@ public abstract class AbstractService {
     @Autowired
     protected PostRepository postRepository;
 
+    protected int pageSize = 10;
+
 }

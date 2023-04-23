@@ -10,7 +10,12 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import static org.springframework.data.domain.PageRequest.of;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +24,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommentService extends AbstractService{
-
     @Autowired
     private CommentRepository commentRepository;
 
@@ -43,7 +47,6 @@ public class CommentService extends AbstractService{
     }
 
     public ContentDTO replyByPost(ContentDTO contentData, int postId, int userId) {
-
         try {
             Comment comment = Comment.builder()
                     .user(userRepository.findById(userId).get())
@@ -88,19 +91,30 @@ public class CommentService extends AbstractService{
             throw new UnauthorizedException("You are not the creator of this comment");
         }
     }
-    public List<CommentDTO> getAllPostComments(int postId) {
-        return commentRepository.findAllByPostId(postId)
+
+    //get with pages
+    public Page<CommentDTO> getAllPostComments(int pageNumber,int postId) {
+        Pageable pageAsParam = of(pageNumber, pageSize);
+        long totalElements = commentRepository.countByPostId(postId);
+
+        List <CommentDTO> result= commentRepository.findAllByPostId(pageAsParam,postId)
                 .stream()
                 .map(comment -> mapper.map(comment, CommentDTO.class))
                 .collect(Collectors.toList());
+        return new PageImpl<>(result, pageAsParam, totalElements);
     }
 
-    public List<CommentDTO> getAllCommentOfUser(int userId){
+    public Page<CommentDTO> getAllCommentOfUser(int pageNumber,int userId){
         if(!userRepository.existsById(userId)) throw new BadRequestException("User does not exist");
-        return commentRepository.findAllByUserId(userId)
+
+        Pageable pageAsParam = of(pageNumber, pageSize);
+        long totalElements = commentRepository.countByUserId(userId);
+
+        List <CommentDTO> result= commentRepository.findAllByUserId(userId)
                 .stream()
                 .map(comment -> mapper.map(comment, CommentDTO.class))
                 .collect(Collectors.toList());
+        return new PageImpl<>(result, pageAsParam, totalElements);
     }
 
     public ContentDTO edit(int commentId, ContentDTO contentData, int loggedId) {
@@ -118,4 +132,11 @@ public class CommentService extends AbstractService{
         }
     }
 
+    public Page<CommentDTO> pageTest(int pageNumber, int loggedId) {
+
+        org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Comment> pageOfComments = commentRepository.findAllByUserId(pageable, loggedId);
+
+        return pageOfComments.map(comment -> mapper.map(comment, CommentDTO.class));
+    }
 }

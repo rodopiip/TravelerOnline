@@ -6,6 +6,7 @@ import com.example.travelleronline.service.CommentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,22 +38,46 @@ public class CommentController extends AbstractController {
         return commentService.getCommentWithChildComments(id);
     }
 
+
+
+
+
+
     @GetMapping("/posts/{postId}/comments")
-    public List<CommentDTO> getAllCommentsOfPost(@PathVariable("postId") int postId, HttpSession s) {
-        return commentService.getAllPostComments(postId);
+    public Page<CommentDTO> getAllCommentsOfPost(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+            @PathVariable("postId") int postId, HttpSession s) {
+        return commentService.getAllPostComments(pageNumber,postId);
     }
     @GetMapping("/comments")
-    public List<CommentDTO> getAllCommentsOfLoggedUser(HttpSession session) {
-        return commentService.getAllCommentOfUser(getLoggedId(session));
+    public Page<CommentDTO> getAllCommentsOfLoggedUser(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+                                                       HttpSession session) {
+        return commentService.getAllCommentOfUser(pageNumber,getLoggedId(session));
     }
     @GetMapping("/users/{userId}/comments")
-    public List<CommentDTO> getAllCommentsOfUser(@PathVariable("userId") int userId) {
-        return commentService.getAllCommentOfUser(userId);
+    public Page<CommentDTO> getAllCommentsOfUser(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+            @PathVariable("userId") int userId) {
+        return commentService.getAllCommentOfUser(pageNumber,userId);
     }
+
+
+
+
+
+
+
     //edit
     @PostMapping("/comments/{commentId}/edit")
     public ContentDTO editComment(@PathVariable("commentId") int commentId,@RequestBody ContentDTO contentData,HttpSession s){
         return commentService.edit(commentId,contentData,getLoggedId(s));
     }
+
+
+
+    @GetMapping("/test")
+    public Page<CommentDTO> pageTest (@RequestParam(name = "page", defaultValue = "0") int pageNumber, HttpSession s){
+        return commentService.pageTest(pageNumber, getLoggedId(s));
+    }
+
+
 
 }
