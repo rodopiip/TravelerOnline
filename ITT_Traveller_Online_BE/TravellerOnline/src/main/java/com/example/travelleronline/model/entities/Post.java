@@ -54,7 +54,7 @@ public class Post {
     private LocalDateTime dateCreated;
 
     @Column(name = "rating")
-    private long rating;
+    private int rating;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images;
