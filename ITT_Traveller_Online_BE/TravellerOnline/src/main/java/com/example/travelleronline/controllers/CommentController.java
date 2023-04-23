@@ -5,14 +5,15 @@ import com.example.travelleronline.model.DTOs.comment.ContentDTO;
 import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.service.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Comment Controller", description = "Comment endpoints")
 @RestController
-
 public class CommentController extends AbstractController {
     @Autowired
     private CommentService commentService;

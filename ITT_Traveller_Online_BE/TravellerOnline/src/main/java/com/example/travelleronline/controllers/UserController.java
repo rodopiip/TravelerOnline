@@ -9,6 +9,7 @@ import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.entities.UserSavePost;
 import com.example.travelleronline.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "User Controller ", description = "User endpoints")
 @RestController
 public class UserController extends AbstractController{
     @Autowired
@@ -65,7 +67,7 @@ public class UserController extends AbstractController{
     public String subscribe(HttpSession session,
                           @PathVariable("subscribe_to_user") int subscribedToId
                             ) {
-        return "Subscribers:"+userService.subscribe(getLoggedId(session), subscribedToId);
+        return "Subscribers:"+userService. subscribe(getLoggedId(session), subscribedToId);
     }
     @GetMapping("/users/{subscribedTo}/subscribers")
     public List<UserWithoutPassDTO> getSubscribers(@PathVariable int subscribedTo){

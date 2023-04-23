@@ -1,3 +1,5 @@
+.tmp
+.gz
 uploads/
 log.log
 log4j2.xml
