@@ -3,13 +3,14 @@ package com.example.travelleronline.controllers;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.service.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+@Tag(name = "Post Controller", description = "Post endpoints")
 @RestController
 //@RequestMapping("localhost:3333")//question: is this necessary?
 public class PostController extends AbstractController{
