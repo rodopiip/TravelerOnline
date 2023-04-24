@@ -56,8 +56,6 @@ public abstract class AbstractController {
         return generateErrorDTO(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
-
     private ErrorDTO generateErrorDTO(Exception e, HttpStatus s){
         return ErrorDTO.builder()
                 .msg(e.getMessage())
@@ -72,12 +70,4 @@ public abstract class AbstractController {
         }
         throw new UnauthorizedException("You have to Login");
     }
-    public boolean checkOwner(HttpSession s, int ownerId){
-        if(getLoggedId(s)==ownerId) return true;
-        else{
-            throw new UnauthorizedException("You need to be the owner.");
-        }
-    }
-
-
 }

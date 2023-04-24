@@ -1,18 +1,19 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Image;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
-import com.example.travelleronline.model.repositories.CommentRepository;
-import com.example.travelleronline.model.repositories.ImageRepository;
-import com.example.travelleronline.model.repositories.PostRepository;
-import com.example.travelleronline.model.repositories.ReactionRepository;
+import com.example.travelleronline.model.exceptions.UnauthorizedException;
+import com.example.travelleronline.model.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,38 +33,25 @@ public class PostService extends AbstractService{
     @Autowired ImageRepository imageRepository;
     @Autowired ReactionRepository reactionRepository;
     @Autowired CommentRepository commentRepository;
+    @Autowired CategoryRepository categoryRepository;
 
-    //add post
-    public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
-        //1. validate post info with static validation service methods
-        //todo - like User attributes validation
+        /*
+        note:
+         1. validate post info with static validation service methods
+         2. get logged user
+         3. create post entity
+         4. set owner
+         5. save (entity) to db
+         6. return dto
+         */
 
-        //2. get logged user
-        User user = userRepository.findById(loggedId).orElseThrow(() -> new RuntimeException("User not found."));
-
-        //3. create post entity
-        Post post = mapper.map(newPostDTO, Post.class);
-
-        //4. set owner
-        post.setOwner(user);
-
-        //5. save to db
-        postRepository.save(post);//save entity
-
-        //6. return dto
-        //map this entity to a dto and return it
-        PostInfoDTO p = mapper.map(post, PostInfoDTO.class);
-        return p;
-
-    }//todo resolve
     //todo Pageable
-    public List<PostInfoDTO> getPosts() {//todo criteria
-        return null;
-//        List<Post> posts = postRepository.getAll();
-//        return posts
-//                .stream()
-//                .map(p -> mapper.map(p, PostInfoDTO.class))
-//                .collect(Collectors.toList());
+    public Page<PostInfoDTO> getAllPostsWithPagination(int pageNumber) {
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "dateCreated");
+        Page<Post> postsPage = postRepository.findAll(pageable);
+
+        return postsPage.map(post -> mapper.map(post, PostInfoDTO.class));
     }
     public PostInfoDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
@@ -79,9 +67,9 @@ public class PostService extends AbstractService{
         postInfoDTO.setCommentCount(commentCount);
         return postInfoDTO;
     }
-    //todo Pageable + connect to comments: OneToMany List<Comments>
-    public List<PostInfoDTO> getUserPosts(int loggedId) {
-        List<Post> posts = postRepository.findByOwnerId(loggedId);
+    //todo Pageable
+    public List<PostInfoDTO> getUserPosts(int userId) {
+        List<Post> posts = postRepository.findByOwnerId(userId);
         return posts
                 .stream()
                 .map(post -> mapper.map(post, PostInfoDTO.class))
@@ -98,7 +86,6 @@ public class PostService extends AbstractService{
     public PostInfoDTO uploadPost(int userId, String title, String description,
                                   String location, int categoryId, MultipartFile video,
                                   MultipartFile image1, MultipartFile image2, MultipartFile image3) {
-        //
         /*
         todo validate : SPRING
          - 1.1. title is shorter than 5 symbols -> Bad request : msg "title is mandatory"
@@ -130,12 +117,6 @@ public class PostService extends AbstractService{
             imageRepository.save(image);//todo refactor: sql native @Query for simultaneous MultipartFile db insertion
         }
     }
-
-    public Post testPost() {
-        return postRepository.findById(3).get();
-    }
-
-    //todo
     private int getBranchedCommentCountForPost(Integer postId) {
         AtomicInteger commentCount = new AtomicInteger(commentRepository.countAllByPostId(postId));
         commentRepository.findAllByPostId(postId).stream()
@@ -150,6 +131,26 @@ public class PostService extends AbstractService{
         Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("No such post"));
         String location = "https://www.google.com/maps/@" + post.getLocation();
         return location;
+    }
+    public PostInfoDTO editPost(int userId, int postId,
+                                PostInfoDTO postInfoDTO){
+//        System.out.println(title);
+        if (checkOwner(userId, postRepository.findById(postId).get().getOwner().getId())){
+            Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("Post not found"));
+            post.setTitle(postInfoDTO.getTitle());
+            post.setDescription(postInfoDTO.getDescription());
+            post.setLocation(postInfoDTO.getLocation());
+            post.setCategory(categoryRepository.getById(postInfoDTO.getCategoryId()));
+            post.setDateCreated(LocalDateTime.now());
+            postRepository.save(post);
+            return mapper.map(post, PostInfoDTO.class);
+        } else {
+            throw new UnauthorizedException("You need to be the owner.");
+        }
+    }
+    //todo search post
+    public boolean checkOwner(int userId, int ownerId) {
+        return (userId == ownerId);
     }
 }
 

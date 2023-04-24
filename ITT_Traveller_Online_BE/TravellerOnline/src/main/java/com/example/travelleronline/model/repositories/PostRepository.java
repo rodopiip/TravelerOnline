@@ -1,6 +1,8 @@
 package com.example.travelleronline.model.repositories;
 
 import com.example.travelleronline.model.entities.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +15,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     public Optional<Post> findById(int id);
 //    public List<Post> getAll();//todo add criteria + Pageable
     public List<Post> findByOwnerId(int ownerId);
+    public Page<Post>findAll(Pageable pageable);
 }
