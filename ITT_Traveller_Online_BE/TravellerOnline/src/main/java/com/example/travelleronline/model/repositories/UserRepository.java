@@ -6,6 +6,8 @@ import com.example.travelleronline.model.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import javax.swing.*;
 import java.util.List;
@@ -16,6 +18,17 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findById(int id);
     Optional<User> findByVerificationCode(String code);
     boolean existsByEmail(String email);
+
+    @Query("SELECT u FROM User u WHERE " +
+            "(u.firstName) LIKE (CONCAT('%', :firstName, '%')) OR " +
+            "(u.lastName) LIKE (CONCAT('%', :lastName, '%')) OR " +
+            "(u.email) LIKE (CONCAT('%', :email, '%')) OR " +
+            "(u.phoneNumber) LIKE (CONCAT('%', :phoneNumber, '%'))")
+    List<User> searchUsers(@Param("firstName") String firstName,
+                           @Param("lastName") String lastName,
+                           @Param("email") String email,
+                           @Param("phoneNumber") String phoneNumber);
+
 
 
 }

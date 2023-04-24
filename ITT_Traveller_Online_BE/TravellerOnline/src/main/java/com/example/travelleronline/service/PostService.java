@@ -1,5 +1,6 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.model.DTOs.comment.CommentDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.DTOs.post.SearchPostDTO;
 import com.example.travelleronline.model.DTOs.post.SearchPostResultDTO;
@@ -39,16 +40,6 @@ public class PostService extends AbstractService{
     @Autowired ImageRepository imageRepository;
     @Autowired ReactionRepository reactionRepository;
     @Autowired CommentRepository commentRepository;
-        /*
-        note:
-         1. validate post info with static validation service methods
-         2. get logged user
-         3. create post entity
-         4. set owner
-         5. save (entity) to db
-         6. return dto
-         */
-
     public Page<PostInfoDTO> getAllPostsWithPagination(int pageNumber) {
         int pageSize = 10;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "dateCreated");
@@ -58,25 +49,22 @@ public class PostService extends AbstractService{
     public PostInfoDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
         PostInfoDTO postInfoDTO = mapper.map(post, PostInfoDTO.class);
-        //note: images -> PostInfoDTO
         List<String> imagesUrls = imageRepository.findAllByPost_Id(id).stream()
                 .map(image -> image.get().getUrl())
                 .collect(Collectors.toList());
         postInfoDTO.setImageUrls(imagesUrls);
-        //note: comment count -> PostInfoDTO
-        //question: count all comments and sub-comments.
         long commentCount = getBranchedCommentCountForPost(post.getId());
         postInfoDTO.setCommentCount(commentCount);
         return postInfoDTO;
     }
+    public Page<PostInfoDTO> getUserPosts(int pageNumber,int userId) {
+        Pageable pageAsParam = of(pageNumber, pageSize);
+        long totalElements = postRepository.countPostsByOwnerId(userId);
 
-    //todo Pageable
-    public List<PostInfoDTO> getUserPosts(int userId) {
-        List<Post> posts = postRepository.findByOwnerId(userId);
-        return posts
-                .stream()
+        List<PostInfoDTO> posts= postRepository.findByOwnerId(pageAsParam,userId).stream()
                 .map(post -> mapper.map(post, PostInfoDTO.class))
                 .collect(Collectors.toList());
+        return new PageImpl<>(posts, pageAsParam, totalElements);
     }
     public String deletePost(int postId, int userId) {
         Post post = postRepository.findById(postId).orElseThrow(()->new BadRequestException("Post not found."));
@@ -91,15 +79,7 @@ public class PostService extends AbstractService{
     public PostInfoDTO uploadPost(int userId, String title, String description,
                                   String location, int categoryId, MultipartFile video,
                                   MultipartFile image1, MultipartFile image2, MultipartFile image3
-                                  ,String additionalInfo)
-    {
-        /*
-        todo validate : SPRING
-         - 1.1. title is shorter than 5 symbols -> Bad request : msg "title is mandatory"
-         - 1.2. description is shorter than 5 symbols -> Bad request : msg "bad request message"
-         - 1.3. title and description have to be not null (mandatory field) -> Bad request : msg "bad request message"
-         - 1.4. validation for images (check if images exist) todo
-         */
+                                  ,String additionalInfo) {
         String videoUrl=null;
         if(!video.isEmpty())videoUrl = MediaService.uploadMedia(video);
         Post post = Post.builder()
@@ -117,7 +97,6 @@ public class PostService extends AbstractService{
         } catch (ConstraintViolationException e){
             throw new BadRequestException("Post input data not acceptable");
         }
-        //refactor
         List <MultipartFile> images = new ArrayList<>();
         if(!image1.isEmpty()) images.add(image1);
         if(!image2.isEmpty()) images.add(image2);

@@ -19,7 +19,7 @@ public class ReactionController extends AbstractController{
     public ReactionDTO reactToPost(@PathVariable("postId") int postId,
                              @RequestBody() ReactionDTO react,
                              HttpSession session){
-        return reactionService.reactToPost(react,getLoggedId(session),postId);//todo
+        return reactionService.reactToPost(react,getLoggedId(session),postId);
     }
     @PostMapping("/comment/{commentId}/reaction")
     public ReactionDTO reactToComment(@PathVariable("commentId") int commentId,

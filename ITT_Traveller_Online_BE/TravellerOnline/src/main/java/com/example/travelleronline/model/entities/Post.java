@@ -47,7 +47,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User owner;//todo
+    private User owner;
     @ManyToOne(fetch = FetchType.LAZY)
     @NotEmpty
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)

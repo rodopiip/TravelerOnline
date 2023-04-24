@@ -92,17 +92,12 @@ public class UserService extends AbstractService{
     }
 
     public List<UserWithoutPassDTO> searchUsers(SearchUDTO criteria) {
-        List<User> users = userRepository.findAll();
-        return users.stream()
-                .filter(user -> criteria.getFirstName() == null
-                        || user.getFirstName().equalsIgnoreCase(criteria.getFirstName()))
-                .filter(user -> criteria.getLastName() == null
-                        || user.getLastName().equalsIgnoreCase(criteria.getLastName()))
-                .filter(user -> criteria.getEmail() == null
-                        || user.getEmail().equalsIgnoreCase(criteria.getEmail()))
-                .filter(user -> criteria.getPhoneNumber() == null
-                        || user.getPhoneNumber().equalsIgnoreCase(criteria.getPhoneNumber()))
-                .map(u->mapper.map(u,UserWithoutPassDTO.class))
+        return userRepository.searchUsers(
+                criteria.getFirstName(),
+                criteria.getLastName(),
+                criteria.getEmail(),
+                criteria.getPhoneNumber()
+        ).stream().map(user -> mapper.map(user,UserWithoutPassDTO.class))
                 .collect(Collectors.toList());
     }
 

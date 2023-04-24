@@ -18,21 +18,23 @@ public class PostController extends AbstractController{
     @Autowired
     private PostService postService;
     @GetMapping("/posts")
-    public Page<PostInfoDTO> getPosts(@RequestParam(name = "post", defaultValue = "0") int pageNumber){
+    public Page<PostInfoDTO> getPosts(@RequestParam(name = "page", defaultValue = "0") int pageNumber){
         return postService.getAllPostsWithPagination(pageNumber);
     }
     @GetMapping("/posts/{id}")
     public PostInfoDTO getPostById(@PathVariable("id") int id){
-        return postService.getPostById(id);//todo service
+        return postService.getPostById(id);
     }
 
     @GetMapping("/users/{userId}/posts")
-    public List<PostInfoDTO> getUserPosts(@PathVariable int userId){
-        return postService.getUserPosts(userId);//todo service
+    public Page<PostInfoDTO> getUserPosts(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+                                    @PathVariable int userId){
+        return postService.getUserPosts(pageNumber,userId);
     }
     @GetMapping("/users/posts")
-    public List<PostInfoDTO> getUserPosts(HttpSession session){
-        return postService.getUserPosts(getLoggedId(session));//todo service
+    public Page<PostInfoDTO> getUserPosts(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+                            HttpSession session){
+        return postService.getUserPosts(pageNumber,getLoggedId(session));
     }
     @PostMapping("/posts")
     public PostInfoDTO uploadPost(@RequestParam("title") String title,
@@ -52,7 +54,6 @@ public class PostController extends AbstractController{
     @DeleteMapping("/posts/{postId}")
     public String deletePost(@PathVariable("postId") int postId, HttpSession s){
         int userId = getLoggedId(s);
-        //question: има ли нужда от параметър userId в `postService.deletePost(postId, userId)`?
         return postService.deletePost(postId, userId);
     }
     @GetMapping("/posts/{postId}/location")
@@ -73,7 +74,6 @@ public class PostController extends AbstractController{
     public PostInfoDTO editPost(@PathVariable("postId") int postId,
                                 @RequestBody PostInfoDTO postInfoDTO,
                                 HttpSession s){
-        //todo validation parameters in entity. HOW?
         int userId = getLoggedId(s);
         return postService.editPost(userId, postId, postInfoDTO);
     }

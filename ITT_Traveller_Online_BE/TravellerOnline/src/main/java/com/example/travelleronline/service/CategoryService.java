@@ -23,7 +23,6 @@ public class CategoryService extends AbstractService{
         Category category = categoryRepository.getById(id);
         return category;
     }
-
     public List<CategoryDTO> createCategories(List<CategoryDTO> categoryDTOs) {
         List <Category> categories = categoryDTOs.stream()
                         .map(categoryDTO -> toCategory(categoryDTO))
@@ -33,14 +32,17 @@ public class CategoryService extends AbstractService{
                 .map(category -> toCategoryDTO(category))
                 .collect(Collectors.toList());
     }
-
     private Category toCategory(CategoryDTO categoryDTO) {
         Category category = mapper.map(categoryDTO, Category.class);
         return category;
     }
-
     private CategoryDTO toCategoryDTO(Category category) {
         CategoryDTO categoryDTO = mapper.map(category, CategoryDTO.class);
         return categoryDTO;
+    }
+    public List<CategoryDTO> getAllCategories() {
+        return categoryRepository.getAll().stream()
+                .map(category -> mapper.map(category,CategoryDTO.class))
+                .collect(Collectors.toList());
     }
 }

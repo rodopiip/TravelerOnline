@@ -19,6 +19,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class User {
 
     @Id
@@ -53,9 +54,11 @@ public class User {
     private Boolean verified=false;
 
     @Column(name = "additional_info")
+    @Size(min = 3,max = 250)
     private String additionalInfo;
 
     @Column(name = "gender")
+    @Size(min = 1,max = 3)
     private String gender;
 
     @Column(name = "date_added", nullable = false, columnDefinition = "TIMESTAMP")
@@ -71,7 +74,7 @@ public class User {
             joinColumns = @JoinColumn(name = "subscriber_id"),
             inverseJoinColumns = @JoinColumn(name="subscribed_to_id")
     )
-    private Set<User> subscribers=new HashSet<>();//todo for subscribers DTO .map(User::getSubscribers)
+    private Set<User> subscribers=new HashSet<>();
 
     @ManyToMany(mappedBy = "subscribers")
     private Set<User> subscribedTo=new HashSet<>();
