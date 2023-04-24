@@ -11,6 +11,7 @@ import com.example.travelleronline.model.exceptions.NotFoundException;
 import com.example.travelleronline.model.exceptions.UnauthorizedException;
 import com.example.travelleronline.model.repositories.*;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -78,10 +79,13 @@ public class PostService extends AbstractService{
                 .collect(Collectors.toList());
     }
     public String deletePost(int postId, int userId) {
-        User user = userRepository.findById(userId).orElseThrow(()->new BadRequestException("User not found."));
         Post post = postRepository.findById(postId).orElseThrow(()->new BadRequestException("Post not found."));
-        user.getPosts().remove(post);
-        return ("You have removed post " + postId + "successfully!");
+        if (checkOwner(post.getOwner().getId(), userId)){
+            postRepository.delete(post);
+            return ("You have removed post " + postId + "successfully!");
+        }else{
+            throw new UnauthorizedException("You are not the owner of this post.");
+        }
     }
     @Transactional
     public PostInfoDTO uploadPost(int userId, String title, String description,
@@ -108,10 +112,12 @@ public class PostService extends AbstractService{
                 .dateCreated(LocalDateTime.now())
                 .videoUrl(videoUrl)
                 .build();
-
-        postRepository.save(post);
-
-        System.out.println("\n\n\n\n"+image2);
+        try {
+            postRepository.save(post);
+        } catch (ConstraintViolationException e){
+            throw new BadRequestException("Post input data not acceptable");
+        }
+        //refactor
         List <MultipartFile> images = new ArrayList<>();
         if(!image1.isEmpty()) images.add(image1);
         if(!image2.isEmpty()) images.add(image2);
@@ -128,7 +134,7 @@ public class PostService extends AbstractService{
                     .url(MediaService.uploadMedia(imageRaw))
                     .post(post)
                     .build();
-            imageRepository.save(image);//todo refactor: sql native @Query for simultaneous MultipartFile db insertion
+            imageRepository.save(image);
             imgUrls.add(image.getUrl());
         }
     }
@@ -147,10 +153,9 @@ public class PostService extends AbstractService{
         String location = "https://www.google.com/maps/@" + post.getLocation();
         return location;
     }
-    public Page<PostInfoDTO> getNewsfeedByDate(int pageNumber, int loggedId) {
+    public Page<PostInfoDTO> getNewsfeedByDate (int pageNumber, int loggedId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
-
         User user=userRepository.findById(loggedId).get();
         List<Integer> subscribers= new ArrayList<>();
         user.getSubscribedTo().stream()
@@ -163,10 +168,9 @@ public class PostService extends AbstractService{
         return new PageImpl<>(result, pageAsParam, totalElements);
     }
 
-    public Page<PostInfoDTO> getNewsfeedByRating(int pageNumber, int loggedId) {
+    public Page<PostInfoDTO> getNewsfeedByRating (int pageNumber, int loggedId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
-
         User user = userRepository.findById(loggedId).get();
         List<Integer> subscribers = new ArrayList<>();
         user.getSubscribedTo().stream()
@@ -180,34 +184,44 @@ public class PostService extends AbstractService{
     }
     public PostInfoDTO editPost(int userId, int postId,
                                 PostInfoDTO postInfoDTO){
-        if (checkOwner(userId, postRepository.findById(postId).get().getOwner().getId())){
-            Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("Post not found"));
-            post.setTitle(postInfoDTO.getTitle());
-            post.setDescription(postInfoDTO.getDescription());
-            post.setLocation(postInfoDTO.getLocation());
-            post.setCategory(categoryRepository.getById(postInfoDTO.getCategoryId()));
-            post.setDateCreated(LocalDateTime.now());
-            postRepository.save(post);
-            return mapper.map(post, PostInfoDTO.class);
-        } else {
-            throw new UnauthorizedException("You need to be the owner.");
+        try {
+            if (checkOwner(userId, postRepository.findById(postId).get().getOwner().getId())){
+                Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("Post not found"));
+                post.setTitle(postInfoDTO.getTitle());
+                post.setDescription(postInfoDTO.getDescription());
+                post.setLocation(postInfoDTO.getLocation());
+                post.setCategory(categoryRepository.getById(postInfoDTO.getCategoryId()));
+                post.setDateCreated(LocalDateTime.now());
+                postRepository.save(post);
+                return mapper.map(post, PostInfoDTO.class);
+            } else {
+                throw new UnauthorizedException("You need to be the owner.");
+            }
+        } catch (ConstraintViolationException e){
+            throw new BadRequestException("Update data not acceptable.");
         }
     }
-    //todo search post by category
     public Page<SearchPostResultDTO> searchPostsByTitle(SearchPostDTO searchPostDTO, int pageNumber) {
-        String searchPrompt = searchPostDTO.getSearchPrompt();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "title");
-        Page<Post> postsPage = postRepository.findAllByTitleContainingIgnoreCaseOrderByTitleDesc(searchPrompt, pageable);
-        return postsPage.map(post -> mapper.map(post, SearchPostResultDTO.class));
+            String searchPrompt = searchPostDTO.getSearchPrompt();
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "title");
+            Page<Post> postsPage = postRepository.getByTitle(searchPrompt, pageable);
+            if (postsPage.isEmpty()){
+                throw new NotFoundException("No such post(s) found..");
+            }
+            return postsPage.map(post -> mapper.map(post, SearchPostResultDTO.class));
     }
     public Page<SearchPostResultDTO> searchPostsByCategories (SearchPostDTO searchPostDTO, int pageNumber) {
-        String searchPrompt = searchPostDTO.getSearchPrompt();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "title");
-        Page<Post> postsPage = postRepository.findAllByCategoryContainingIgnoreCaseOrderByCategoryDesc(searchPrompt, pageable);
-        return postsPage.map(post -> mapper.map(post, SearchPostResultDTO.class));
+        try {
+            String searchPrompt = searchPostDTO.getSearchPrompt();
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "title");
+            int categoryId = categoryRepository.findCategoryIdByName(searchPrompt);
+            Page<Post> postsPage = postRepository.getByCategoryId(categoryId, pageable);
+            return postsPage.map(post -> mapper.map(post, SearchPostResultDTO.class));
+        } catch (Exception e){
+            throw new BadRequestException("No such post(s) found..");
+        }
     }
-    //note: util
-    public boolean checkOwner(int userId, int ownerId) {
+    private boolean checkOwner(int userId, int ownerId) {
         return (userId == ownerId);
     }
 }

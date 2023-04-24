@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ReactionController extends AbstractController{
     @Autowired
-    private ReactionService reactionService;//todo
-
+    private ReactionService reactionService;
     @PostMapping("/posts/{postId}/reaction")
     public ReactionDTO reactToPost(@PathVariable("postId") int postId,
                              @RequestBody() ReactionDTO react,

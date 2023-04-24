@@ -21,10 +21,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query(value = "SELECT * FROM posts WHERE user_id IN (:userIds) ORDER BY date_created DESC", nativeQuery = true)
     Page<Post> getNewsFeedByDate(@Param("userIds") List<Integer> userIds, Pageable pageable);
-
     @Query(value = "SELECT * FROM posts WHERE user_id IN (:userIds) ORDER BY rating DESC", nativeQuery = true)
     Page<Post> getNewsFeedByLikes(@Param("userIds") List<Integer> userIds, Pageable pageable);
-
-    Page<Post> findAllByTitleContainingIgnoreCaseOrderByTitleDesc(String searchString, Pageable pageable);
-    Page<Post> findAllByCategoryContainingIgnoreCaseOrderByCategoryDesc(String searchString, Pageable pageable);
+    @Query(value = "SELECT * FROM posts WHERE title LIKE CONCAT('%', :searchPrompt, '%')", nativeQuery = true)
+    Page<Post> getByTitle(@Param("searchPrompt") String searchPrompt, Pageable pageable);
+    Page<Post> getByCategoryId(int categoryId, Pageable pageable);
 }

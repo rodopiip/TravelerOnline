@@ -19,12 +19,10 @@ import java.nio.file.Files;
 public class MediaController extends AbstractController{
     @Autowired
     private MediaService mediaService;
-
     @PutMapping("/user/media")
     public UserWithoutPassDTO uploadProfilePic(@RequestParam("file")MultipartFile file, HttpSession session){
         return mediaService.changeProfilePic(file,getLoggedId(session));
     }
-
     @GetMapping("/media/{filename:.+}")
     public void downloadMedia(@PathVariable("filename") String fileName, HttpServletResponse response) {
         File responseFile=mediaService.downloadMedia(fileName);

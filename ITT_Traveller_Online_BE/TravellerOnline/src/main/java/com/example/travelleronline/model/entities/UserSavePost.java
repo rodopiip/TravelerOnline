@@ -2,15 +2,18 @@ package com.example.travelleronline.model.entities;
 
 import com.example.travelleronline.model.entities.compositePKeys.UserAndPostCPK;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SortComparator;
 
 @Entity
 @Table(name = "users_save_posts")
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class UserSavePost {
     @EmbeddedId
     private UserAndPostCPK id;

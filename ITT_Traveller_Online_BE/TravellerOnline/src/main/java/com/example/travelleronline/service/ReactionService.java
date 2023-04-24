@@ -55,7 +55,7 @@ public class ReactionService extends AbstractService{
         if(opt.isPresent()){
             react=opt.get();
             existed=true;
-            if(react.getStatus()== reactionDTO.getStatus()){
+            if(react.getStatus() == reactionDTO.getStatus()){
                 throw new BadRequestException("The reaction is the same as it was before, you cannot double like");
             }
         }else {

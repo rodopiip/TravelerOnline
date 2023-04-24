@@ -12,5 +12,4 @@ import lombok.Setter;
 public class ContentDTO {
     Integer id;
     String content;
-
 }

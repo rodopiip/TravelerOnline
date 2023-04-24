@@ -92,8 +92,6 @@ public class UserService extends AbstractService{
     }
 
     public List<UserWithoutPassDTO> searchUsers(SearchUDTO criteria) {
-        //this is when you know what type exactly is the search data(in the json)
-        //toDo: make it work like a searchbar, idea: if it's 1 parameter add it in ever field?
         List<User> users = userRepository.findAll();
         return users.stream()
                 .filter(user -> criteria.getFirstName() == null

@@ -32,7 +32,6 @@ public class CommentService extends AbstractService{
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
         return mapCommentWithReplies(comment);
     }
-
     private CommentDTO mapCommentWithReplies(Comment comment) {
         CommentDTO commentDTO = mapper.map(comment, CommentDTO.class);
         commentDTO.setParentCommentId(comment.getParentComment() != null ? comment.getParentComment().getId() : null);
@@ -45,8 +44,7 @@ public class CommentService extends AbstractService{
         commentDTO.setChildComments(childCommentDTOs);
         return commentDTO;
     }
-
-    public ContentDTO replyByPost(ContentDTO contentData, int postId, int userId) {
+    public ContentDTO replyToPost(ContentDTO contentData, int postId, int userId) {
         try {
             Comment comment = Comment.builder()
                     .user(userRepository.findById(userId).get())
@@ -63,7 +61,7 @@ public class CommentService extends AbstractService{
             throw new BadRequestException("Comments can be between 1 and 300 symbols");
         }
     }
-    public ContentDTO saveByComment(ContentDTO contentData, int commentedCommentId,int userId) {
+    public ContentDTO replyToComment(ContentDTO contentData, int commentedCommentId, int userId) {
 
         try {
             Comment comment = Comment.builder()
@@ -71,7 +69,6 @@ public class CommentService extends AbstractService{
                     .content(contentData.getContent())
                     .parentComment(commentRepository.findById(commentedCommentId).
                             orElseThrow(()-> new BadRequestException("no such comment exists")))
-//                    .post(null)
                     .dateAdded(LocalDateTime.now())
                     .rating(0)
                     .build();
@@ -91,8 +88,6 @@ public class CommentService extends AbstractService{
             throw new UnauthorizedException("You are not the creator of this comment");
         }
     }
-
-    //get with pages
     public Page<CommentDTO> getAllPostComments(int pageNumber,int postId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = commentRepository.countAllByPostId(postId);
@@ -103,7 +98,6 @@ public class CommentService extends AbstractService{
                 .collect(Collectors.toList());
         return new PageImpl<>(result, pageAsParam, totalElements);
     }
-
     public Page<CommentDTO> getAllCommentOfUser(int pageNumber,int userId){
         if(!userRepository.existsById(userId)) throw new BadRequestException("User does not exist");
 
@@ -116,7 +110,6 @@ public class CommentService extends AbstractService{
                 .collect(Collectors.toList());
         return new PageImpl<>(result, pageAsParam, totalElements);
     }
-
     public ContentDTO edit(int commentId, ContentDTO contentData, int loggedId) {
         Comment existingComment = commentRepository.findById(commentId)
                 .orElseThrow(()->new BadRequestException("No such comment"));
@@ -131,7 +124,6 @@ public class CommentService extends AbstractService{
             throw new BadRequestException("Comments can be between 1 and 300 symbols");
         }
     }
-
     public Page<CommentDTO> pageTest(int pageNumber, int loggedId) {
 
         org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize);

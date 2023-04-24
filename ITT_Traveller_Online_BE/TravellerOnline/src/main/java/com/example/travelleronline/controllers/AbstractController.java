@@ -25,17 +25,14 @@ public abstract class AbstractController {
     public ErrorDTO handleBadRequest(Exception e){
         return generateErrorDTO(e, HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(UnauthorizedException.class)
     public ErrorDTO handleUnauthorized(Exception e){
         return generateErrorDTO(e, HttpStatus.UNAUTHORIZED);
     }
-
     @ExceptionHandler(NotFoundException.class)
     public ErrorDTO handleNotFound(Exception e){
         return generateErrorDTO(e, HttpStatus.NOT_FOUND);
     }
-
     @ExceptionHandler(SizeLimitExceededException.class)
     public ErrorDTO handleSizeLimitExceededException(Exception e) {
         return generateErrorDTO(e, HttpStatus.BAD_REQUEST);
@@ -44,18 +41,14 @@ public abstract class AbstractController {
     public ErrorDTO handleBadMail(Exception e){
         return generateErrorDTO(e, HttpStatus.METHOD_FAILURE);
     }
-
-
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorDTO handleBadData(Exception e){
         return generateErrorDTO(e, HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(Exception.class)
     public ErrorDTO handleRest(Exception e){
         return generateErrorDTO(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
     private ErrorDTO generateErrorDTO(Exception e, HttpStatus s){
         return ErrorDTO.builder()
                 .msg(e.getMessage())

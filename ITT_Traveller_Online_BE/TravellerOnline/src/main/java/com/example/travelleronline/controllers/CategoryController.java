@@ -13,19 +13,17 @@ import java.util.List;
 public class CategoryController extends AbstractController{
     @Autowired
     private CategoryService categoryService;
-
+    //todo
     //get all categories - localhost:3333/categories
 //    public List<CategoryDTO> getAllCategories() {
 //        return categoryService.getAllCategories();//todo
 //    }
-    //admin-enabled functionality
     @PostMapping("/categories")
     public CategoryDTO createCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO returnedCategoryDTO = categoryService.createCategory(categoryDTO);
         logger.info(returnedCategoryDTO.toString() + " category to be created...");
         return returnedCategoryDTO;
     }
-
     @PostMapping("/categories/add-many")
     public List<CategoryDTO> createCategories(@RequestBody List<CategoryDTO> categories){
         return categoryService.createCategories(categories);
