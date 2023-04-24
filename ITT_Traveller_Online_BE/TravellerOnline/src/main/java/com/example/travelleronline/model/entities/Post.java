@@ -40,13 +40,14 @@ public class Post {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User owner;
     @ManyToOne(fetch = FetchType.LAZY)
-    @NotEmpty
+    @NotNull
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
+
     @Column(name = "video_url")
     private String videoUrl;
     @Column(name = "date_created", nullable = false, columnDefinition = "TIMESTAMP")
-    @NotEmpty
+    @NotNull
     private LocalDateTime dateCreated;
     @Size(max = 500)
     @Column(name="additional_info")

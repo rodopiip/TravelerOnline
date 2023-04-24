@@ -1,8 +1,8 @@
 package com.example.travelleronline.model.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
 import java.util.List;
 
@@ -10,12 +10,16 @@ import java.util.List;
 @Table(name = "categories")
 @Getter
 @Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
 
     @Column(name = "name", nullable = false)
+    @NotEmpty
     private String name;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)

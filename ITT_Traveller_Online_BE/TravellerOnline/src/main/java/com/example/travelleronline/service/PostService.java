@@ -79,7 +79,7 @@ public class PostService extends AbstractService{
                                   MultipartFile image1, MultipartFile image2, MultipartFile image3
                                   ,String additionalInfo) {
         String videoUrl=null;
-        if(!video.isEmpty())videoUrl = MediaService.uploadMedia(video);
+        if(video!=null)videoUrl = MediaService.uploadMedia(video);
         Post post = Post.builder()
                 .owner(userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found.")))
                 .title(title)
@@ -96,9 +96,9 @@ public class PostService extends AbstractService{
             throw new BadRequestException("Post input data not acceptable");
         }
         List <MultipartFile> images = new ArrayList<>();
-        if(!image1.isEmpty()) images.add(image1);
-        if(!image2.isEmpty()) images.add(image2);
-        if(!image3.isEmpty()) images.add(image3);
+        if(image1!=null) images.add(image1);
+        if(image2!=null) images.add(image2);
+        if(image3!=null) images.add(image3);
         List <String> imgUrls= new ArrayList<>();
         setImages(post, images,imgUrls);
         PostInfoDTO result = mapper.map(post, PostInfoDTO.class);

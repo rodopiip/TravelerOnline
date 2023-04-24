@@ -41,11 +41,11 @@ public class PostController extends AbstractController{
                                   @RequestParam("description") String description,
                                   @RequestParam("location") String location,
                                   @RequestParam("categoryId") int categoryId,
-                                  @RequestParam("additionalInfo") String additionalInfo,
-                                  @RequestParam("video") MultipartFile video,
-                                  @RequestParam("image1") MultipartFile image1,
-                                  @RequestParam("image2") MultipartFile image2,
-                                  @RequestParam("image3") MultipartFile image3,
+                                  @RequestParam(name = "additionalInfo", required = false) String additionalInfo,
+                                  @RequestParam(name = "video", required = false) MultipartFile video,
+                                  @RequestParam(name = "image1", required = false) MultipartFile image1,
+                                  @RequestParam(name = "image2", required = false) MultipartFile image2,
+                                  @RequestParam(name = "image3", required = false) MultipartFile image3,
                                   HttpSession s){
         int userId = getLoggedId(s);
         return postService.uploadPost(userId, title, description, location, categoryId,
