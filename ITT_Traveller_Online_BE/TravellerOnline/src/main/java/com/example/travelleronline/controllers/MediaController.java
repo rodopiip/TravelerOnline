@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-@Tag(name = "Media Controller", description = "Endpoints for all of our media, pictures, videos and everything else that is not text.")
+@Tag(name = "Media Controller", description = "Media, pictures and videos ednpoints.")
 @RestController
 public class MediaController extends AbstractController{
     @Autowired
