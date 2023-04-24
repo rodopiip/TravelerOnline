@@ -18,9 +18,9 @@ public class CategoryService extends AbstractService{
         Category savedCategory = categoryRepository.save(category);
         return toCategoryDTO(savedCategory);
     }
-    public Category getByCategoryId(int id){
+    public CategoryDTO getByCategoryId(int id){
         Category category = categoryRepository.getById(id);
-        return category;
+        return mapper.map(category,CategoryDTO.class);
     }
     public List<CategoryDTO> createCategories(List<CategoryDTO> categoryDTOs) {
         List <Category> categories = categoryDTOs.stream()

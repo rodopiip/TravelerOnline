@@ -17,6 +17,10 @@ public class CategoryController extends AbstractController{
     public List<CategoryDTO> getAllCategories() {
         return categoryService.getAllCategories();
     }
+    @GetMapping("/categories/{categoryId}")
+    public CategoryDTO getAllCategories(@PathVariable("categoryId") int categoryId) {
+        return categoryService.getByCategoryId(categoryId);
+    }
     @PostMapping("/categories")
     public CategoryDTO createCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO returnedCategoryDTO = categoryService.createCategory(categoryDTO);
@@ -27,4 +31,5 @@ public class CategoryController extends AbstractController{
     public List<CategoryDTO> createCategories(@RequestBody List<CategoryDTO> categories){
         return categoryService.createCategories(categories);
     }
+
 }
