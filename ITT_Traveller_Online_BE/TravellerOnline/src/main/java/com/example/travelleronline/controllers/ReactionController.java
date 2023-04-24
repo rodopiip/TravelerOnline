@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Reaction Controller", description = "Reacton endpoints")
@@ -15,12 +16,16 @@ public class ReactionController extends AbstractController{
     @Autowired
     private ReactionService reactionService;//todo
 
-    @PostMapping("/posts/{postId}/reactions/{status}")
-    public ReactionDTO react(@PathVariable("postId") int postId,
-                             @PathVariable("status") int status,
+    @PostMapping("/posts/{postId}/reaction")
+    public ReactionDTO reactToPost(@PathVariable("postId") int postId,
+                             @RequestBody() ReactionDTO react,
                              HttpSession session){
-        int userId=0;//todo:
-        ReactionDTO reactionDTO = new ReactionDTO(null, userId, status, postId, null);//todo ReactionDTO
-        return reactionService.react(reactionDTO,getLoggedId(session));//todo
+        return reactionService.reactToPost(react,getLoggedId(session),postId);//todo
+    }
+    @PostMapping("/comment/{commentId}/reaction")
+    public ReactionDTO reactToComment(@PathVariable("commentId") int commentId,
+                             @RequestBody() ReactionDTO react,
+                             HttpSession session){
+        return reactionService.reactToComment(react,getLoggedId(session),commentId);
     }
 }

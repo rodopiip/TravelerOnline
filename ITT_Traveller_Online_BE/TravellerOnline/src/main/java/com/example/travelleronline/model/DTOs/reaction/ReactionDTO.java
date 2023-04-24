@@ -1,6 +1,11 @@
 package com.example.travelleronline.model.DTOs.reaction;
 
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReactionDTO {
-    public ReactionDTO(Object o, int userId, int status, int postId, Object o1) {
-    }
+    private Integer status;
 }
