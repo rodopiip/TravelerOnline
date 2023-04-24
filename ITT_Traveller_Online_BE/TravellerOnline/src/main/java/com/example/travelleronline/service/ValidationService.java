@@ -14,7 +14,6 @@ public class ValidationService{
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
     private static final String PASS_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()])(?=.*[^\\s]).{8,}$";
     private static final Pattern PASS_PATTERN = Pattern.compile(PASS_REGEX);
-
     public static boolean isValidEmail(String email){
         Matcher matcher = EMAIL_PATTERN.matcher(email);
         return matcher.matches();
@@ -33,7 +32,4 @@ public class ValidationService{
     public static String encodePassword(String password){
         return encoder.encode(password);
     }
-
-
-
 }

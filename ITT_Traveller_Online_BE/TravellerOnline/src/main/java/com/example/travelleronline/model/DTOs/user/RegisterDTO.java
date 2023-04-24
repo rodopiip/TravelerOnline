@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-//make fields valid.
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,26 +15,16 @@ import java.time.LocalDateTime;
 public class RegisterDTO {
 
     private String firstName;
-
     private String lastName;
-
     private String password;
     private String confirmPassword;
     private String email;
-
     private String phoneNumber;
-
     private LocalDate dateOfBirth;
-
     private String profilePhoto;
-
     private Boolean isVerified;
-
     private String additionalInfo;
-
     private String gender;
-
     private LocalDateTime dateAdded= LocalDateTime.now();
     private String verificationCode;
-
 }

@@ -1,6 +1,5 @@
 package com.example.travelleronline.model.repositories;
 
-import com.example.travelleronline.model.entities.Comment;
 import com.example.travelleronline.model.entities.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,11 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    public Optional<Post> findById(int id);
-
-    public Page<Post> findByOwnerId(Pageable pageable,int ownerId);
+    Optional<Post> findById(int id);
+    Page<Post> findByOwnerId(Pageable pageable,int ownerId);
     Page<Post> findAll(Pageable pageable);
-
     @Query(value = "SELECT * FROM posts WHERE user_id IN (:userIds) ORDER BY date_created DESC", nativeQuery = true)
     Page<Post> getNewsFeedByDate(@Param("userIds") List<Integer> userIds, Pageable pageable);
     @Query(value = "SELECT * FROM posts WHERE user_id IN (:userIds) ORDER BY rating DESC", nativeQuery = true)
@@ -26,7 +23,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT * FROM posts WHERE title LIKE CONCAT('%', :searchPrompt, '%')", nativeQuery = true)
     Page<Post> getByTitle(@Param("searchPrompt") String searchPrompt, Pageable pageable);
     Page<Post> getByCategoryId(int categoryId, Pageable pageable);
-
     long countPostsByOwnerId(int userID);
-
 }

@@ -9,12 +9,6 @@ import lombok.*;
 @ToString
 @Builder
 public class UserWithoutPassDTO {
-
-    /*
-    DTO without lists:
-    prevention of circular list invocation
-    (circular reference) : composition both ways
-     */
     private int id;
     private String firstName;
     private String lastName;

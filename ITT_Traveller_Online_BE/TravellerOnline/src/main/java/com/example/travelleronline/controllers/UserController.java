@@ -20,7 +20,6 @@ import java.util.List;
 public class UserController extends AbstractController{
     @Autowired
     private UserService userService;
-
     @PostMapping("/users/auth")
     public UserWithoutPassDTO login(@Valid @RequestBody LoginDTO loginData, HttpSession session){
         UserWithoutPassDTO u = userService.login(loginData);
@@ -99,5 +98,4 @@ public class UserController extends AbstractController{
     public UserWithoutPassDTO resetPassword(@PathVariable String mail) {
         return userService.resetPass(mail);
     }
-
 }

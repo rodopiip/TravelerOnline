@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 @Service
 public class UserService extends AbstractService{
     @Autowired
@@ -33,7 +32,6 @@ public class UserService extends AbstractService{
                 "localhost:3333/users/validate/verCode/"+verCode+"\n");
         return verCode;
     }
-
     public UserWithoutPassDTO validateVerCode(String verificationCode) {
         User u=userRepository.findByVerificationCode(verificationCode).orElseThrow(()->new BadRequestException("No such user"));
         u.setVerified(true);
@@ -46,7 +44,6 @@ public class UserService extends AbstractService{
 
         return mapper.map(u, UserWithoutPassDTO.class);
     }
-
     public UserWithoutPassDTO register(RegisterDTO regData) {
         String email= regData.getEmail();
         if(!validator.isValidEmail(email)){
@@ -77,7 +74,6 @@ public class UserService extends AbstractService{
         userRepository.save(u);
         return mapper.map(u,UserWithoutPassDTO.class);
     }
-
     public UserWithoutPassDTO changePass(ChangePassDTO changePassData, int userId){
         checkPassword(changePassData,userId);
         if (!changePassData.getNewPassword().
@@ -90,7 +86,6 @@ public class UserService extends AbstractService{
         userRepository.save(u);
         return mapper.map(u, UserWithoutPassDTO.class);
     }
-
     public List<UserWithoutPassDTO> searchUsers(SearchUDTO criteria) {
         return userRepository.searchUsers(
                 criteria.getFirstName(),
@@ -100,7 +95,6 @@ public class UserService extends AbstractService{
         ).stream().map(user -> mapper.map(user,UserWithoutPassDTO.class))
                 .collect(Collectors.toList());
     }
-
     public UserWithoutPassDTO deleteUserById(int userId) {
         User u=userRepository.findById(userId).get();
         userRepository.deleteById(userId);

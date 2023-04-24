@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.util.Optional;
-
 @Service
 public class ReactionService extends AbstractService{
     @Autowired
@@ -76,5 +75,4 @@ public class ReactionService extends AbstractService{
         commentRepository.save(react.getComment());
         return reactionDTO;
     }
-
 }

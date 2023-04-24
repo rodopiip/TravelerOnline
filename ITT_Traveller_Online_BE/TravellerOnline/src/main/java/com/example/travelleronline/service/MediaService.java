@@ -18,11 +18,9 @@ import java.util.UUID;
 
 @Service
 public class MediaService extends AbstractService{
-
     @Autowired
     private UserRepository userRepository;
     private static final File folder=new File("uploads");
-
     @SneakyThrows
     public static String uploadMedia(MultipartFile file){
         String ext= FilenameUtils.getExtension(file.getOriginalFilename());
@@ -39,16 +37,13 @@ public class MediaService extends AbstractService{
         toDelete.delete();
         return true;
     }
-
     public UserWithoutPassDTO changeProfilePic(MultipartFile file,int userId){
         String url=uploadMedia(file);
-        //maybe validate it's image?
         User user=userRepository.findById(userId).orElseThrow(()->new BadRequestException("User does not exist anymore"));
         user.setProfilePhoto(url);
         userRepository.save(user);
         return mapper.map(user, UserWithoutPassDTO.class);
     }
-
     public File downloadMedia(String fileName){
         File f=new File(folder,fileName);
         if(f.exists()){

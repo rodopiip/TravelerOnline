@@ -1,6 +1,5 @@
 package com.example.travelleronline.model.repositories;
 
-import com.example.travelleronline.model.DTOs.category.CategoryDTO;
 import com.example.travelleronline.model.entities.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

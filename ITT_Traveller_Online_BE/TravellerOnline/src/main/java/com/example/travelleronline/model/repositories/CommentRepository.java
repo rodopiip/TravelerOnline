@@ -12,7 +12,6 @@ import java.util.Set;
 
 public interface CommentRepository extends JpaRepository<Comment,Integer>, PagingAndSortingRepository<Comment,Integer> {
     Page<Comment> findAllByUserId(Pageable pageable, int loggedId);
-
     Page<Comment> findAllByPostId(Pageable pageable, int postId);
     List<Comment> findAllByPostId(int postId);
     List<Comment> findAllByUserId(Integer userId);

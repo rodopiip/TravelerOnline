@@ -81,14 +81,12 @@ public class PostController extends AbstractController{
     public Page<SearchPostResultDTO>searchPostsByTitle(@RequestBody SearchPostDTO searchPostDTO,
                                                        @RequestParam(name = "page", defaultValue = "0") int pageNumber)
     {
-        System.out.println("test 1");
         return postService.searchPostsByTitle(searchPostDTO, pageNumber);
     }
     @PostMapping("/posts/category_search")
     public Page<SearchPostResultDTO>searchPostsByCategories(@RequestBody SearchPostDTO searchPostDTO,
                                                             @RequestParam(name = "page", defaultValue = "0") int pageNumber)
     {
-        System.out.println("test 2");
         return postService.searchPostsByCategories(searchPostDTO, pageNumber);
     }
 }

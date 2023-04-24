@@ -11,16 +11,13 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
-
     public String sendEmail(String reciever,String title,String content){
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("ThisEmailIsGenerated@gmail.com");
             message.setTo(reciever);
-
             message.setText(content);
             message.setSubject(title);
-
             mailSender.send(message);
             return "Mail send successfully";
         }catch (MailException e){

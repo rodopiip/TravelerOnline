@@ -21,29 +21,20 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    /*
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
-    @NotBlank
-    @Size(max = 500)
-     */
     @Column(name = "title", nullable = false, columnDefinition = "TEXT")
     @NotEmpty
     @Size(max = 30)
     private String title;
-
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     @NotEmpty
     @Size(max = 500)
     private String description;
-
     @Column(name = "location")
     @Size(max = 200)
     private String location;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)

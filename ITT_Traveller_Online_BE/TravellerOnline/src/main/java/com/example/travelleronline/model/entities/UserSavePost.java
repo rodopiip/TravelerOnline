@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SortComparator;
-
 @Entity
 @Table(name = "users_save_posts")
 @Getter
@@ -17,15 +16,12 @@ import org.hibernate.annotations.SortComparator;
 public class UserSavePost {
     @EmbeddedId
     private UserAndPostCPK id;
-
     @MapsId("id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
-
     @MapsId("id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
-
     public UserSavePost(User user, Post post) {
         this.user = user;
         this.post = post;

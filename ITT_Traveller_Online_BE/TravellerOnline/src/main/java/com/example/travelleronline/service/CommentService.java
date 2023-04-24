@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 public class CommentService extends AbstractService{
     @Autowired
     private CommentRepository commentRepository;
-
     public CommentDTO getCommentWithChildComments(Integer commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));

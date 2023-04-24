@@ -1,6 +1,5 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.DTOs.comment.CommentDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.DTOs.post.SearchPostDTO;
 import com.example.travelleronline.model.DTOs.post.SearchPostResultDTO;
@@ -32,7 +31,6 @@ import static org.springframework.data.domain.PageRequest.of;
 
 @Service
 public class PostService extends AbstractService{
-
     @Autowired
     private PostRepository postRepository;//data base
     @Autowired
@@ -146,7 +144,6 @@ public class PostService extends AbstractService{
                         .collect(Collectors.toList());
         return new PageImpl<>(result, pageAsParam, totalElements);
     }
-
     public Page<PostInfoDTO> getNewsfeedByRating (int pageNumber, int loggedId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
