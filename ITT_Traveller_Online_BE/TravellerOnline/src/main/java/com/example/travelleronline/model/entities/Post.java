@@ -54,11 +54,11 @@ public class Post {
     //todo constraint
     private LocalDateTime dateCreated;
 
-    @Column(name = "rating")
-    private int rating;
+    //note: Integer type, because in doesn't support null values
     @Column(name="additional_info")
     private String additionalInfo;
-
+    @Column(name = "rating")
+    private Integer rating;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();

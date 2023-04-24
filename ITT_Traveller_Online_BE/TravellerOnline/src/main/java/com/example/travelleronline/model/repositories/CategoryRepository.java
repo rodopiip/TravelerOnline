@@ -11,5 +11,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     public Category getById(int id);//todo for displaying the post
     @Query(value = "SELECT * FROM categories;", nativeQuery = true)
     public List<Category> getAll();
+
 //    public List<Category> sa //todo
 }

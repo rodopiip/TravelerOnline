@@ -31,9 +31,4 @@ public class CategoryController extends AbstractController{
         return categoryService.createCategories(categories);
     }
 
-    // Delete category
-    @DeleteMapping("/{categoryId}")
-    public void deleteCategory(@PathVariable("categoryId") int categoryId) {
-        categoryService.deleteCategory(categoryId);//todo
-    }
 }

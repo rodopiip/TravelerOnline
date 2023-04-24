@@ -14,21 +14,9 @@ import java.util.stream.Collectors;
 public class CategoryService extends AbstractService{
     @Autowired
     private CategoryRepository categoryRepository;
-    //todo
-//    public List<CategoryDTO> getAllCategories() {
-//        List<CategoryDTO> categoryDTOs = categoryRepository.getAll().stream()
-//                .map(category -> (category, CategoryDTO.class))
-//    }
-    //note: admins only
-    public void deleteCategory(int categoryId) {
-        return;
-    }//todo
-    //note: admins only
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         Category category = toCategory(categoryDTO);
-        //try{
         Category savedCategory = categoryRepository.save(category);
-        //}catch(){}//todo
         return toCategoryDTO(savedCategory);
     }
     public Category getByCategoryId(int id){
@@ -40,9 +28,7 @@ public class CategoryService extends AbstractService{
         List <Category> categories = categoryDTOs.stream()
                         .map(categoryDTO -> toCategory(categoryDTO))
                         .collect(Collectors.toList());
-//        try{
             List <Category> savedCategories = categoryRepository.saveAll(categories);
-//        }catch (){}//todo
         return savedCategories.stream()
                 .map(category -> toCategoryDTO(category))
                 .collect(Collectors.toList());

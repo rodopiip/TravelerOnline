@@ -1,30 +1,26 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.DTOs.comment.CommentDTO;
-import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Image;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.exceptions.BadRequestException;
 import com.example.travelleronline.model.exceptions.NotFoundException;
-import com.example.travelleronline.model.repositories.CommentRepository;
-import com.example.travelleronline.model.repositories.ImageRepository;
-import com.example.travelleronline.model.repositories.PostRepository;
-import com.example.travelleronline.model.repositories.ReactionRepository;
+import com.example.travelleronline.model.exceptions.UnauthorizedException;
+import com.example.travelleronline.model.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -36,21 +32,25 @@ public class PostService extends AbstractService{
     @Autowired
     private PostRepository postRepository;//data base
     @Autowired
-    private CategoryService categoryService;
-
+    private CategoryRepository categoryRepository;
     @Autowired ImageRepository imageRepository;
     @Autowired ReactionRepository reactionRepository;
     @Autowired CommentRepository commentRepository;
-    public Page<PostInfoDTO> getPosts(int pageNumber) {//todo criteria
+        /*
+        note:
+         1. validate post info with static validation service methods
+         2. get logged user
+         3. create post entity
+         4. set owner
+         5. save (entity) to db
+         6. return dto
+         */
 
-        Pageable pageAsParam = of(pageNumber, pageSize);
-        long totalElements = postRepository.count();
-        List <PostInfoDTO> result=
-                postRepository.findAll(pageAsParam)
-                .stream()
-                .map(post -> mapper.map(post, PostInfoDTO.class))
-                .collect(Collectors.toList());
-        return new PageImpl<>(result, pageAsParam, totalElements);
+    public Page<PostInfoDTO> getAllPostsWithPagination(int pageNumber) {
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "dateCreated");
+        Page<Post> postsPage = postRepository.findAll(pageable);
+        return postsPage.map(post -> mapper.map(post, PostInfoDTO.class));
     }
     public PostInfoDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
@@ -66,15 +66,15 @@ public class PostService extends AbstractService{
         postInfoDTO.setCommentCount(commentCount);
         return postInfoDTO;
     }
-    //todo Pageable + connect to comments: OneToMany List<Comments>
-    public List<PostInfoDTO> getUserPosts(int userID) {
-        List<Post> posts = postRepository.findByOwnerId(userID);
+
+    //todo Pageable
+    public List<PostInfoDTO> getUserPosts(int userId) {
+        List<Post> posts = postRepository.findByOwnerId(userId);
         return posts
                 .stream()
                 .map(post -> mapper.map(post, PostInfoDTO.class))
                 .collect(Collectors.toList());
     }
-
     public String deletePost(int postId, int userId) {
         User user = userRepository.findById(userId).orElseThrow(()->new BadRequestException("User not found."));
         Post post = postRepository.findById(postId).orElseThrow(()->new BadRequestException("Post not found."));
@@ -85,8 +85,8 @@ public class PostService extends AbstractService{
     public PostInfoDTO uploadPost(int userId, String title, String description,
                                   String location, int categoryId, MultipartFile video,
                                   MultipartFile image1, MultipartFile image2, MultipartFile image3
-                                    ,String additionalInfo) {
-        //
+                                  ,String additionalInfo)
+    {
         /*
         todo validate : SPRING
          - 1.1. title is shorter than 5 symbols -> Bad request : msg "title is mandatory"
@@ -102,7 +102,7 @@ public class PostService extends AbstractService{
                 .description(description)
                 .location(location)
                 .additionalInfo(additionalInfo)
-                .category(categoryService.getByCategoryId(categoryId))
+                .category(categoryRepository.getById(categoryId))
                 .dateCreated(LocalDateTime.now())
                 .videoUrl(videoUrl)
                 .build();
@@ -130,12 +130,6 @@ public class PostService extends AbstractService{
             imgUrls.add(image.getUrl());
         }
     }
-
-    public Post testPost() {
-        return postRepository.findById(3).get();
-    }
-
-    //todo
     private int getBranchedCommentCountForPost(Integer postId) {
         AtomicInteger commentCount = new AtomicInteger(commentRepository.countAllByPostId(postId));
         commentRepository.findAllByPostId(postId).stream()
@@ -151,7 +145,6 @@ public class PostService extends AbstractService{
         String location = "https://www.google.com/maps/@" + post.getLocation();
         return location;
     }
-
     public Page<PostInfoDTO> getNewsfeedByDate(int pageNumber, int loggedId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
@@ -161,7 +154,7 @@ public class PostService extends AbstractService{
         user.getSubscribedTo().stream()
                 .forEach(sub -> subscribers.add(sub.getId()));
         List <PostInfoDTO> result=
-                postRepository.newsFeedByDate(subscribers,pageAsParam)
+                postRepository.getNewsFeedByDate(subscribers,pageAsParam)
                         .stream()
                         .map(post -> mapper.map(post, PostInfoDTO.class))
                         .collect(Collectors.toList());
@@ -172,16 +165,36 @@ public class PostService extends AbstractService{
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
 
-        User user=userRepository.findById(loggedId).get();
-        List<Integer> subscribers= new ArrayList<>();
+        User user = userRepository.findById(loggedId).get();
+        List<Integer> subscribers = new ArrayList<>();
         user.getSubscribedTo().stream()
                 .forEach(sub -> subscribers.add(sub.getId()));
-        List <PostInfoDTO> result=
-                postRepository.newsFeedByLikes(subscribers,pageAsParam)
+        List<PostInfoDTO> result =
+                postRepository.getNewsFeedByLikes(subscribers, pageAsParam)
                         .stream()
                         .map(post -> mapper.map(post, PostInfoDTO.class))
                         .collect(Collectors.toList());
         return new PageImpl<>(result, pageAsParam, totalElements);
+    }
+    public PostInfoDTO editPost(int userId, int postId,
+                                PostInfoDTO postInfoDTO){
+//        System.out.println(title);
+        if (checkOwner(userId, postRepository.findById(postId).get().getOwner().getId())){
+            Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("Post not found"));
+            post.setTitle(postInfoDTO.getTitle());
+            post.setDescription(postInfoDTO.getDescription());
+            post.setLocation(postInfoDTO.getLocation());
+            post.setCategory(categoryRepository.getById(postInfoDTO.getCategoryId()));
+            post.setDateCreated(LocalDateTime.now());
+            postRepository.save(post);
+            return mapper.map(post, PostInfoDTO.class);
+        } else {
+            throw new UnauthorizedException("You need to be the owner.");
+        }
+    }
+    //todo search post
+    public boolean checkOwner(int userId, int ownerId) {
+        return (userId == ownerId);
     }
 }
 
