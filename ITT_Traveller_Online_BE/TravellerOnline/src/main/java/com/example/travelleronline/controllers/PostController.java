@@ -1,6 +1,8 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
+import com.example.travelleronline.model.DTOs.post.SearchPostDTO;
+import com.example.travelleronline.model.DTOs.post.SearchPostResultDTO;
 import com.example.travelleronline.service.PostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
@@ -60,20 +62,16 @@ public class PostController extends AbstractController{
     public String getLocationUrl(@PathVariable int postId){
         return postService.getLocationUrl(postId);
     }
-
-    //note:newsfeed
     @GetMapping("/newsfeedbydate")
     public Page<PostInfoDTO> newsfeedbydate(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
                                             HttpSession session){
         return postService.getNewsfeedByDate(pageNumber,getLoggedId(session));
     }
-    //note:newsfeed
     @GetMapping("/newsfeedbyrating")
     public Page<PostInfoDTO> newsfeedbyrating(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
                                               HttpSession session) {
         return postService.getNewsfeedByRating(pageNumber, getLoggedId(session));
     }
-
     @PutMapping("/posts/{postId}")
     public PostInfoDTO editPost(@PathVariable("postId") int postId,
                                 @RequestBody PostInfoDTO postInfoDTO,
@@ -81,7 +79,16 @@ public class PostController extends AbstractController{
         //todo validation parameters in entity. HOW?
         int userId = getLoggedId(s);
         return postService.editPost(userId, postId, postInfoDTO);
-
+    }
+    @GetMapping("/posts/name-search")
+    public Page<SearchPostResultDTO>searchPostsByTitle(@RequestBody SearchPostDTO searchPostDTO,
+                                                       @RequestParam(name = "page", defaultValue = "0") int pageNumber){
+        return postService.searchPostsByTitle(searchPostDTO, pageNumber);
+    }
+    @GetMapping("localhost:3333/posts/category-search")
+    public Page<SearchPostResultDTO>searchPostsByCategories(@RequestParam SearchPostDTO searchPostDTO,
+                                                            @RequestParam(name = "page", defaultValue = "0") int pageNumber){
+        return postService.searchPostsByCategories(searchPostDTO, pageNumber);
     }
 }
 

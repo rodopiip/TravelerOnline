@@ -1,6 +1,8 @@
 package com.example.travelleronline.service;
 
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
+import com.example.travelleronline.model.DTOs.post.SearchPostDTO;
+import com.example.travelleronline.model.DTOs.post.SearchPostResultDTO;
 import com.example.travelleronline.model.entities.Image;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
@@ -178,7 +180,6 @@ public class PostService extends AbstractService{
     }
     public PostInfoDTO editPost(int userId, int postId,
                                 PostInfoDTO postInfoDTO){
-//        System.out.println(title);
         if (checkOwner(userId, postRepository.findById(postId).get().getOwner().getId())){
             Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("Post not found"));
             post.setTitle(postInfoDTO.getTitle());
@@ -192,11 +193,21 @@ public class PostService extends AbstractService{
             throw new UnauthorizedException("You need to be the owner.");
         }
     }
-    //todo search post
+    //todo search post by category
+    public Page<SearchPostResultDTO> searchPostsByTitle(SearchPostDTO searchPostDTO, int pageNumber) {
+        String searchPrompt = searchPostDTO.getSearchPrompt();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "title");
+        Page<Post> postsPage = postRepository.findAllByTitleContainingIgnoreCaseOrderByTitleDesc(searchPrompt, pageable);
+        return postsPage.map(post -> mapper.map(post, SearchPostResultDTO.class));
+    }
+    public Page<SearchPostResultDTO> searchPostsByCategories (SearchPostDTO searchPostDTO, int pageNumber) {
+        String searchPrompt = searchPostDTO.getSearchPrompt();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.DESC, "title");
+        Page<Post> postsPage = postRepository.findAllByCategoryContainingIgnoreCaseOrderByCategoryDesc(searchPrompt, pageable);
+        return postsPage.map(post -> mapper.map(post, SearchPostResultDTO.class));
+    }
+    //note: util
     public boolean checkOwner(int userId, int ownerId) {
         return (userId == ownerId);
     }
 }
-
-
-

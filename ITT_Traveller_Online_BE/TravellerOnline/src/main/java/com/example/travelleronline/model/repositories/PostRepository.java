@@ -24,5 +24,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query(value = "SELECT * FROM posts WHERE user_id IN (:userIds) ORDER BY rating DESC", nativeQuery = true)
     Page<Post> getNewsFeedByLikes(@Param("userIds") List<Integer> userIds, Pageable pageable);
-}
 
+    Page<Post> findAllByTitleContainingIgnoreCaseOrderByTitleDesc(String searchString, Pageable pageable);
+    Page<Post> findAllByCategoryContainingIgnoreCaseOrderByCategoryDesc(String searchString, Pageable pageable);
+}

@@ -7,8 +7,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-//refactor: use record instead of pojo?
 @Getter
 @Setter
 @AllArgsConstructor
