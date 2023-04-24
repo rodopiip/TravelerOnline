@@ -1,5 +1,6 @@
 package com.example.travelleronline.service;
 
+import com.example.travelleronline.model.DTOs.comment.CommentDTO;
 import com.example.travelleronline.model.DTOs.post.CreatePostDTO;
 import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.entities.Image;
@@ -13,13 +14,21 @@ import com.example.travelleronline.model.repositories.PostRepository;
 import com.example.travelleronline.model.repositories.ReactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.PageRequest.of;
 
 @Service
 public class PostService extends AbstractService{
@@ -32,38 +41,16 @@ public class PostService extends AbstractService{
     @Autowired ImageRepository imageRepository;
     @Autowired ReactionRepository reactionRepository;
     @Autowired CommentRepository commentRepository;
+    public Page<PostInfoDTO> getPosts(int pageNumber) {//todo criteria
 
-    //add post
-    public PostInfoDTO addPost(CreatePostDTO newPostDTO, int loggedId, List<MultipartFile> images, MultipartFile video){//todo after service
-        //1. validate post info with static validation service methods
-        //todo - like User attributes validation
-
-        //2. get logged user
-        User user = userRepository.findById(loggedId).orElseThrow(() -> new RuntimeException("User not found."));
-
-        //3. create post entity
-        Post post = mapper.map(newPostDTO, Post.class);
-
-        //4. set owner
-        post.setOwner(user);
-
-        //5. save to db
-        postRepository.save(post);//save entity
-
-        //6. return dto
-        //map this entity to a dto and return it
-        PostInfoDTO p = mapper.map(post, PostInfoDTO.class);
-        return p;
-
-    }//todo resolve
-    //todo Pageable
-    public List<PostInfoDTO> getPosts() {//todo criteria
-        return null;
-//        List<Post> posts = postRepository.getAll();
-//        return posts
-//                .stream()
-//                .map(p -> mapper.map(p, PostInfoDTO.class))
-//                .collect(Collectors.toList());
+        Pageable pageAsParam = of(pageNumber, pageSize);
+        long totalElements = postRepository.count();
+        List <PostInfoDTO> result=
+                postRepository.findAll(pageAsParam)
+                .stream()
+                .map(post -> mapper.map(post, PostInfoDTO.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(result, pageAsParam, totalElements);
     }
     public PostInfoDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseThrow(()->new BadRequestException("Post does not exist."));
@@ -80,8 +67,8 @@ public class PostService extends AbstractService{
         return postInfoDTO;
     }
     //todo Pageable + connect to comments: OneToMany List<Comments>
-    public List<PostInfoDTO> getUserPosts(int loggedId) {
-        List<Post> posts = postRepository.findByOwnerId(loggedId);
+    public List<PostInfoDTO> getUserPosts(int userID) {
+        List<Post> posts = postRepository.findByOwnerId(userID);
         return posts
                 .stream()
                 .map(post -> mapper.map(post, PostInfoDTO.class))
@@ -97,7 +84,8 @@ public class PostService extends AbstractService{
     @Transactional
     public PostInfoDTO uploadPost(int userId, String title, String description,
                                   String location, int categoryId, MultipartFile video,
-                                  MultipartFile image1, MultipartFile image2, MultipartFile image3) {
+                                  MultipartFile image1, MultipartFile image2, MultipartFile image3
+                                    ,String additionalInfo) {
         //
         /*
         todo validate : SPRING
@@ -106,28 +94,40 @@ public class PostService extends AbstractService{
          - 1.3. title and description have to be not null (mandatory field) -> Bad request : msg "bad request message"
          - 1.4. validation for images (check if images exist) todo
          */
-        String videoUrl = MediaService.uploadMedia(video);
+        String videoUrl=null;
+        if(!video.isEmpty())videoUrl = MediaService.uploadMedia(video);
         Post post = Post.builder()
                 .owner(userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found.")))
                 .title(title)
                 .description(description)
                 .location(location)
+                .additionalInfo(additionalInfo)
                 .category(categoryService.getByCategoryId(categoryId))
                 .dateCreated(LocalDateTime.now())
                 .videoUrl(videoUrl)
                 .build();
+
         postRepository.save(post);
-        List <MultipartFile> images = List.of(image1, image2, image3);
-        setImages(post, images);
-        return mapper.map(post, PostInfoDTO.class);
+
+        System.out.println("\n\n\n\n"+image2);
+        List <MultipartFile> images = new ArrayList<>();
+        if(!image1.isEmpty()) images.add(image1);
+        if(!image2.isEmpty()) images.add(image2);
+        if(!image3.isEmpty()) images.add(image3);
+        List <String> imgUrls= new ArrayList<>();
+        setImages(post, images,imgUrls);
+        PostInfoDTO result = mapper.map(post, PostInfoDTO.class);
+        result.setImageUrls(imgUrls);
+        return result;
     }
-    public void setImages(Post post, List<MultipartFile> images){
+    public void setImages(Post post, List<MultipartFile> images, List<String> imgUrls){
         for(MultipartFile imageRaw : images){
             Image image = Image.builder()
                     .url(MediaService.uploadMedia(imageRaw))
                     .post(post)
                     .build();
             imageRepository.save(image);//todo refactor: sql native @Query for simultaneous MultipartFile db insertion
+            imgUrls.add(image.getUrl());
         }
     }
 
@@ -150,6 +150,38 @@ public class PostService extends AbstractService{
         Post post = postRepository.findById(postId).orElseThrow(()->new NotFoundException("No such post"));
         String location = "https://www.google.com/maps/@" + post.getLocation();
         return location;
+    }
+
+    public Page<PostInfoDTO> getNewsfeedByDate(int pageNumber, int loggedId) {
+        Pageable pageAsParam = of(pageNumber, pageSize);
+        long totalElements = postRepository.count();
+
+        User user=userRepository.findById(loggedId).get();
+        List<Integer> subscribers= new ArrayList<>();
+        user.getSubscribedTo().stream()
+                .forEach(sub -> subscribers.add(sub.getId()));
+        List <PostInfoDTO> result=
+                postRepository.newsFeedByDate(subscribers,pageAsParam)
+                        .stream()
+                        .map(post -> mapper.map(post, PostInfoDTO.class))
+                        .collect(Collectors.toList());
+        return new PageImpl<>(result, pageAsParam, totalElements);
+    }
+
+    public Page<PostInfoDTO> getNewsfeedByRating(int pageNumber, int loggedId) {
+        Pageable pageAsParam = of(pageNumber, pageSize);
+        long totalElements = postRepository.count();
+
+        User user=userRepository.findById(loggedId).get();
+        List<Integer> subscribers= new ArrayList<>();
+        user.getSubscribedTo().stream()
+                .forEach(sub -> subscribers.add(sub.getId()));
+        List <PostInfoDTO> result=
+                postRepository.newsFeedByLikes(subscribers,pageAsParam)
+                        .stream()
+                        .map(post -> mapper.map(post, PostInfoDTO.class))
+                        .collect(Collectors.toList());
+        return new PageImpl<>(result, pageAsParam, totalElements);
     }
 }
 

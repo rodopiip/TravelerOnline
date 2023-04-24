@@ -15,7 +15,6 @@ public class ReactionController extends AbstractController{
     @Autowired
     private ReactionService reactionService;//todo
 
-    //react - localhost:3333/posts/{postId}/reactions/{status}
     @PostMapping("/posts/{postId}/reactions/{status}")
     public ReactionDTO react(@PathVariable("postId") int postId,
                              @PathVariable("status") int status,

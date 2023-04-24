@@ -2,6 +2,7 @@ package com.example.travelleronline.model.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,9 +56,12 @@ public class Post {
 
     @Column(name = "rating")
     private int rating;
+    @Column(name="additional_info")
+    private String additionalInfo;
+
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<UserSavePost> savedByUsers = new HashSet();

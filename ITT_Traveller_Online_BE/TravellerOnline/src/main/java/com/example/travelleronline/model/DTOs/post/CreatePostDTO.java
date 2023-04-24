@@ -19,7 +19,7 @@ public class CreatePostDTO {
     private String description;
     private String location;
     private String additionalInfo;
-    private Integer categoryId;
+    private int categoryId;
     private String videoUrl;
     private LocalDateTime dateCreated;
 }

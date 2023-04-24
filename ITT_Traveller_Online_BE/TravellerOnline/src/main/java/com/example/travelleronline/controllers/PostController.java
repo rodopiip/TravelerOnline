@@ -6,6 +6,7 @@ import com.example.travelleronline.service.PostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,22 +23,25 @@ public class PostController extends AbstractController{
     public PostInfoDTO getPostById(@PathVariable("id") int id){
         return postService.getPostById(id);//todo service
     }
-    @GetMapping("/users/{user-id}/posts")
+    @GetMapping("/users/{userId}/posts")
+    public List<PostInfoDTO> getUserPosts(@PathVariable int userId){
+        return postService.getUserPosts(userId);//todo service
+    }
+    @GetMapping("/users/posts")
     public List<PostInfoDTO> getUserPosts(HttpSession session){
         return postService.getUserPosts(getLoggedId(session));//todo service
     }
     //todo pageable
     @GetMapping("/posts")
-    public List<PostInfoDTO> getPosts(){//newsfeed
-        //todo Spring validation for criteria?
-        //todo sort
-        return postService.getPosts();
+    public Page<PostInfoDTO> getPosts(@RequestParam(name = "page", defaultValue = "0") int pageNumber){//newsfeed
+        return postService.getPosts(pageNumber);
     }
     @PostMapping("/posts")
     public PostInfoDTO uploadPost(@RequestParam("title") String title,
                                   @RequestParam("description") String description,
                                   @RequestParam("location") String location,
                                   @RequestParam("categoryId") int categoryId,
+                                  @RequestParam("additionalInfo") String additionalInfo,
                                   @RequestParam("video") MultipartFile video,
                                   @RequestParam("image1") MultipartFile image1,
                                   @RequestParam("image2") MultipartFile image2,
@@ -45,7 +49,7 @@ public class PostController extends AbstractController{
                                   HttpSession s){
         int userId = getLoggedId(s);
         return postService.uploadPost(userId, title, description, location, categoryId,
-                video, image1, image2, image3);
+                video, image1, image2, image3, additionalInfo);
         //logger.debug(userId + " created a post");todo refactor
         //logger.warn("WEIRD");todo refactor
     }
@@ -64,5 +68,18 @@ public class PostController extends AbstractController{
     @GetMapping("/posts/{postId}/location")
     public String getLocationUrl(@PathVariable int postId){
         return postService.getLocationUrl(postId);
+    }
+
+
+
+    @GetMapping("/newsfeedbydate")
+    public Page<PostInfoDTO> newsfeedbydate(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+                                            HttpSession session){//newsfeed
+        return postService.getNewsfeedByDate(pageNumber,getLoggedId(session));
+    }
+    @GetMapping("/newsfeedbyrating")
+    public Page<PostInfoDTO> newsfeedbyrating(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
+                                              HttpSession session){//newsfeed
+        return postService.getNewsfeedByRating(pageNumber,getLoggedId(session));
     }
 }
