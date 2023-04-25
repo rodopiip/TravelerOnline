@@ -26,7 +26,7 @@ public class Post {
     private Integer id;
     @Column(name = "title", nullable = false, columnDefinition = "TEXT")
     @NotEmpty
-    @Size(max = 30)
+    @Size(max = 100)
     private String title;
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     @NotEmpty

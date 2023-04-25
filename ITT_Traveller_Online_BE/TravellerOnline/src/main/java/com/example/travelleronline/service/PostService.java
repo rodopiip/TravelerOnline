@@ -164,7 +164,6 @@ public class PostService extends AbstractService{
                 post.setTitle(postInfoDTO.getTitle());
                 post.setDescription(postInfoDTO.getDescription());
                 post.setLocation(postInfoDTO.getLocation());
-                post.setCategory(categoryRepository.getById(postInfoDTO.getCategoryId()));
                 post.setDateCreated(LocalDateTime.now());
                 postRepository.save(post);
                 return mapper.map(post, PostInfoDTO.class);

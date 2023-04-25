@@ -45,7 +45,7 @@ public class CommentController extends AbstractController {
             @PathVariable("userId") int userId) {
         return commentService.getAllCommentOfUser(pageNumber,userId);
     }
-    @PostMapping("/comments/{commentId}/edit")
+    @PutMapping("/comments/{commentId}/edit")
     public ContentDTO editComment(@PathVariable("commentId") int commentId,@RequestBody ContentDTO contentData,HttpSession s){
         return commentService.edit(commentId,contentData,getLoggedId(s));
     }
