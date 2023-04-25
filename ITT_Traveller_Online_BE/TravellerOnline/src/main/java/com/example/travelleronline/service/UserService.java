@@ -1,6 +1,7 @@
 package com.example.travelleronline.service;
 
 import com.example.travelleronline.model.DTOs.bookmark.UserToPostDTO;
+import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.DTOs.user.*;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
@@ -183,11 +184,10 @@ public class UserService extends AbstractService{
             return mapper.map(bookmarkRepository.save(newBookmark),UserToPostDTO.class);
         }
     }
-    public List<UserToPostDTO> bookmarkList(int loggedId) {
-        return getUserFromId(loggedId).getSavedPosts().stream()
-                .map( aBookmark ->mapper.map(aBookmark, UserToPostDTO.class))
+    public List<PostInfoDTO> bookmarkList(int loggedId){
+        return postRepository.getTheBookmarkedPosts(loggedId).stream()
+                .map(post -> mapper.map(post,PostInfoDTO.class))
                 .collect(Collectors.toList());
-        //maybe return only post_id?
     }
 
     public UserWithoutPassDTO resetPass(String mail) {
