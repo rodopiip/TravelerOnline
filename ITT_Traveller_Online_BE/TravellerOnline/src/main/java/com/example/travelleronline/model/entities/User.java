@@ -20,6 +20,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
+@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,23 +54,17 @@ public class User {
     private LocalDateTime dateAdded= LocalDateTime.now();
     @Column(name = "verification_code")
     private String verificationCode;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_subscribe_to_users",
             joinColumns = @JoinColumn(name = "subscriber_id"),
             inverseJoinColumns = @JoinColumn(name="subscribed_to_id")
     )
     private Set<User> subscribers=new HashSet<>();
-    @ManyToMany(mappedBy = "subscribers")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "subscribers")
     private Set<User> subscribedTo=new HashSet<>();
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Post> posts;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserSavePost> savedPosts = new HashSet<>();
-
-
-
-
-
-
 }

@@ -64,7 +64,7 @@ public class UserController extends AbstractController{
     public String subscribe(HttpSession session,
                           @PathVariable("subscribe_to_user") int subscribedToId
                             ) {
-        return "Subscribers:"+userService. subscribe(getLoggedId(session), subscribedToId);
+        return userService.subscribe(getLoggedId(session), subscribedToId);
     }
     @GetMapping("/users/{subscribedTo}/subscribers")
     public List<UserWithoutPassDTO> getSubscribers(@PathVariable int subscribedTo){
