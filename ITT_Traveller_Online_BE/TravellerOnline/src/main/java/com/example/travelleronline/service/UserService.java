@@ -8,6 +8,7 @@ import com.example.travelleronline.model.entities.UserSavePost;
 import com.example.travelleronline.exceptions.BadRequestException;
 
 import com.example.travelleronline.model.repositories.UserSavePostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,20 +120,18 @@ public class UserService extends AbstractService{
         return mapper.map(u,UserWithoutPassDTO.class);
     }
 
-    public int subscribe(int subscriberId, int subscribedToId){
+    @Transactional
+    public String subscribe(int subscriberId, int subscribedToId){
         if(subscriberId==subscribedToId){
             throw new BadRequestException("You cannot subscribe to yourself");
         }
-        User subscriber = Optional.ofNullable(userRepository.findById(subscriberId).orElseThrow(()->new BadRequestException("No account found"))).get();;
-        User subscribedTo = Optional.ofNullable(userRepository.findById(subscribedToId).orElseThrow(()->new BadRequestException("No user found"))).get();;
-        if(subscriber.getSubscribedTo().contains(subscribedTo)){
-            subscribedTo.getSubscribers().remove(subscriber);
-        }else{
-            subscribedTo.getSubscribers().add(subscriber);
-
-        }
-        userRepository.save(subscribedTo);
-        return subscribedTo.getSubscribers().size();
+        if(userRepository.subscriptionExist(subscribedToId,subscriberId)>0){
+                userRepository.deleteSubscription(subscribedToId,subscriberId);
+            return ("Unsubscribed successfully");
+            }else{
+                userRepository.addSubscription(subscribedToId,subscriberId);
+            return ("Subscribed successfully");
+            }
     }
     private boolean checkPassword(ChangePassDTO changeData,int userId){
         //might as well be void though

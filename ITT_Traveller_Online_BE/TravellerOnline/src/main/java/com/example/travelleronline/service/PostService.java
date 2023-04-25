@@ -133,29 +133,27 @@ public class PostService extends AbstractService{
     public Page<PostInfoDTO> getNewsfeedByDate (int pageNumber, int loggedId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
-        User user=userRepository.findById(loggedId).get();
-        List<Integer> subscribers= new ArrayList<>();
-        user.getSubscribedTo().stream()
-                .forEach(sub -> subscribers.add(sub.getId()));
-        List <PostInfoDTO> result=
+
+        List<Integer> subscribers = userRepository.findSubscribedToIdsBySubscriberId(loggedId);
+        List<PostInfoDTO> result =
                 postRepository.getNewsFeedByDate(subscribers,pageAsParam)
                         .stream()
                         .map(post -> mapper.map(post, PostInfoDTO.class))
                         .collect(Collectors.toList());
+        if(result.size()==0) throw new NotFoundException("You need to subscribe to view newsfeed.");
         return new PageImpl<>(result, pageAsParam, totalElements);
     }
     public Page<PostInfoDTO> getNewsfeedByRating (int pageNumber, int loggedId) {
         Pageable pageAsParam = of(pageNumber, pageSize);
         long totalElements = postRepository.count();
-        User user = userRepository.findById(loggedId).get();
-        List<Integer> subscribers = new ArrayList<>();
-        user.getSubscribedTo().stream()
-                .forEach(sub -> subscribers.add(sub.getId()));
+
+        List<Integer> subscribers = userRepository.findSubscribedToIdsBySubscriberId(loggedId);
         List<PostInfoDTO> result =
                 postRepository.getNewsFeedByLikes(subscribers, pageAsParam)
                         .stream()
                         .map(post -> mapper.map(post, PostInfoDTO.class))
                         .collect(Collectors.toList());
+        if(result.size()==0) throw new NotFoundException("You need to subscribe to view newsfeed.");
         return new PageImpl<>(result, pageAsParam, totalElements);
     }
     public PostInfoDTO editPost(int userId, int postId,
