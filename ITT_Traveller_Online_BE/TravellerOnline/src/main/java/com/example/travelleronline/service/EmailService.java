@@ -1,6 +1,6 @@
 package com.example.travelleronline.service;
 
-import com.example.travelleronline.model.exceptions.BadEmailException;
+import com.example.travelleronline.exceptions.BadEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;

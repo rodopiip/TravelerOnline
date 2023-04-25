@@ -2,14 +2,13 @@ package com.example.travelleronline.service;
 
 import com.example.travelleronline.model.DTOs.reaction.ReactionDTO;
 import com.example.travelleronline.model.entities.Reaction;
-import com.example.travelleronline.model.exceptions.BadRequestException;
+import com.example.travelleronline.exceptions.BadRequestException;
 import com.example.travelleronline.model.repositories.CommentRepository;
 import com.example.travelleronline.model.repositories.ReactionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 @Service
 public class ReactionService extends AbstractService{

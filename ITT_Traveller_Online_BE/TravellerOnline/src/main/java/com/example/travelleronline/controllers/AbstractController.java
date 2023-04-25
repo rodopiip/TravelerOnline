@@ -2,10 +2,10 @@ package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.ErrorDTO;
 
-import com.example.travelleronline.model.exceptions.BadEmailException;
-import com.example.travelleronline.model.exceptions.BadRequestException;
-import com.example.travelleronline.model.exceptions.NotFoundException;
-import com.example.travelleronline.model.exceptions.UnauthorizedException;
+import com.example.travelleronline.exceptions.BadEmailException;
+import com.example.travelleronline.exceptions.BadRequestException;
+import com.example.travelleronline.exceptions.NotFoundException;
+import com.example.travelleronline.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

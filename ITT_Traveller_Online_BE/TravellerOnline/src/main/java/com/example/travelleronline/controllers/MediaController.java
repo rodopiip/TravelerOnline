@@ -1,12 +1,11 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.user.UserWithoutPassDTO;
-import com.example.travelleronline.model.exceptions.BadRequestException;
+import com.example.travelleronline.exceptions.BadRequestException;
 import com.example.travelleronline.service.MediaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

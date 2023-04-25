@@ -1,4 +1,4 @@
-package com.example.travelleronline.model.exceptions;
+package com.example.travelleronline.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

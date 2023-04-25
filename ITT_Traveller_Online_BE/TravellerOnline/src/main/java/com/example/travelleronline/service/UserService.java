@@ -5,7 +5,7 @@ import com.example.travelleronline.model.DTOs.user.*;
 import com.example.travelleronline.model.entities.Post;
 import com.example.travelleronline.model.entities.User;
 import com.example.travelleronline.model.entities.UserSavePost;
-import com.example.travelleronline.model.exceptions.BadRequestException;
+import com.example.travelleronline.exceptions.BadRequestException;
 
 import com.example.travelleronline.model.repositories.UserSavePostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
