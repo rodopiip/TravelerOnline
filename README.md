@@ -3,7 +3,7 @@
 Final Project
 IT Talents Season 15
 
-## Technology Stack
+Technology Stack
 
 software:
 - Java 17
