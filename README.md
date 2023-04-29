@@ -32,7 +32,7 @@ TravellerOnline is a free web service designed to connect travel enthusiasts and
 git clone https://github.com/rodopiip/TravellerOnline.git
 ```
 - open the IntelliJ project
-- reverse engeneer the database
+- reverse-engeneer the database
 - connect the drivers
 - run the spring boot application
 - [send requests via Postman](https://documenter.getpostman.com/view/26793882/2s93XsYRxe#b23de5e5-755e-45fa-9b4d-0dea998a74f6)
