@@ -8,11 +8,6 @@ TravellerOnline is a free web service designed to connect travel enthusiasts and
 
 ℹ️ TravellerOnline is currently in development mode, and the database is local. As a result, the web service is not accessible at the moment. Existing bugs are being addressed during this phase. The decision to implement substantial new features is currently under consideration.
 
-## Planned Features
-
-1. Implement Flyway for database migration management
-2. Develop comprehensive unit tests
-3. Incorporate ethically-focused features
 
 ## Technology Stack
 
@@ -42,3 +37,8 @@ git clone https://github.com/rodopiip/TravellerOnline.git
 - run the spring boot application
 - [send requests via Postman](https://documenter.getpostman.com/view/26793882/2s93XsYRxe#b23de5e5-755e-45fa-9b4d-0dea998a74f6)
 
+## Planned Features
+
+1. Implement Flyway for database migration management
+2. Develop comprehensive unit tests
+3. Incorporate ethically-focused features
