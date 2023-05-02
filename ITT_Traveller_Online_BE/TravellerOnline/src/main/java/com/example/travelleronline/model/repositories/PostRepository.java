@@ -27,5 +27,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     long countPostsByOwnerId(int userID);
 
     @Query(value = "SELECT * FROM posts p WHERE p.id IN (SELECT post_id FROM users_save_posts WHERE user_id = ?1)", nativeQuery = true)
+//    @Query("SELECT p FROM UserSavePost s LEFT JOIN Post p ON s.userId = p.userId AND s.postId = p.id WHERE s.userId = ?1")
     List<Post> getTheBookmarkedPosts(int subscriberId);
 }
