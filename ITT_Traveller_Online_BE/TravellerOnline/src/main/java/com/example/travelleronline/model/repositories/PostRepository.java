@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,4 +25,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> getByTitle(@Param("searchPrompt") String searchPrompt, Pageable pageable);
     Page<Post> getByCategoryId(int categoryId, Pageable pageable);
     long countPostsByOwnerId(int userID);
+
+    @Query(value = "SELECT * FROM posts p WHERE p.id IN (SELECT post_id FROM users_save_posts WHERE user_id = ?1)", nativeQuery = true)
+//    @Query("SELECT p FROM UserSavePost s LEFT JOIN Post p ON s.userId = p.userId AND s.postId = p.id WHERE s.userId = ?1")
+    List<Post> getTheBookmarkedPosts(int subscriberId);
 }

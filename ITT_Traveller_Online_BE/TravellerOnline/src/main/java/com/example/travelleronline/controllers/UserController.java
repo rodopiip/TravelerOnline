@@ -1,6 +1,7 @@
 package com.example.travelleronline.controllers;
 
 import com.example.travelleronline.model.DTOs.bookmark.UserToPostDTO;
+import com.example.travelleronline.model.DTOs.post.PostInfoDTO;
 import com.example.travelleronline.model.DTOs.user.SearchUDTO;
 import com.example.travelleronline.model.DTOs.user.ChangePassDTO;
 import com.example.travelleronline.model.DTOs.user.LoginDTO;
@@ -81,11 +82,11 @@ public class UserController extends AbstractController{
     }
 
     @GetMapping("/users/bookmark")
-    public List<UserToPostDTO> getBookmarkList(HttpSession session) {
+    public List<PostInfoDTO> getBookmarkList(HttpSession session) {
         return userService.bookmarkList(getLoggedId(session));
     }
     @GetMapping("users/{userId}/bookmark")
-    public List<UserToPostDTO> getBookmarks(@PathVariable int userId) {
+    public List<PostInfoDTO> getBookmarks(@PathVariable int userId) {
         return userService.bookmarkList(userId);
     }
 
