@@ -27,18 +27,28 @@ TravellerOnline is a free web service designed to connect travel enthusiasts and
 - Tomcat, ChatGPT
 
 ## Testing the API with Postman
-- Clone the repository
+- Clone repository
 ```
 git clone https://github.com/rodopiip/TravellerOnline.git
 ```
-- open the IntelliJ project
-- reverse-engeneer the database
-- connect the drivers
-- run the spring boot application
-- [send requests via Postman](https://documenter.getpostman.com/view/26793882/2s93XsYRxe#b23de5e5-755e-45fa-9b4d-0dea998a74f6)
+- Open IntelliJ project
+- Build project with Maven
+- Reverse-engeneer database by applying
+ ```TravellerOnline\DataBase\ddl.sql```
+- Configure server port (Default: 3333)
+- Run the spring boot application from *TravellerOnlineApplication.java*
+- [Send requests via Postman](https://documenter.getpostman.com/view/26793882/2s93XsYRxe#b23de5e5-755e-45fa-9b4d-0dea998a74f6)
 
 ## Planned Features
 
 1. Implement Flyway for database migration management
 2. Develop comprehensive unit tests
 3. Incorporate ethically-focused features
+
+## Additional Info
+- [Work notes](https://docs.google.com/document/d/18VVJxBbhBrgDCXVcrU1pEjvy6LdouT1P7scFiyf5ZoM/edit?usp=sharing)
+- [Action map](https://docs.google.com/spreadsheets/d/1Db2u_mNmnjyZQibEdSYKLZWHbPTS7BNLUycky8Pz15Q/edit?usp=sharing)
+- [Miro brainstorm board](https://miro.com/app/board/uXjVMW0nLjE=/)
+
+## Contributers
+@MariyaRadeva @PeterRachev
