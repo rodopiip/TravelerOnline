@@ -148,7 +148,7 @@ public class UserService extends AbstractService{
         return mapper.map(userRepository.findById(userId),UserWithoutPassDTO.class);
     }
 
-    public UserWithoutPassDTO userWithSubById(int userId) {
+    public UserWithoutPassDTO getUserWithSubById(int userId) {
         return mapper.map(userRepository.findById(userId).orElseThrow(()->new BadRequestException("Such user doesn't exist")), UserWithSub.class);
     }
 

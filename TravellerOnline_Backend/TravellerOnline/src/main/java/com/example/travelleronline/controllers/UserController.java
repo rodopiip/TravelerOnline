@@ -39,9 +39,9 @@ public class UserController extends AbstractController{
     }
 
     @GetMapping("/users/{userId}")
-    public UserWithoutPassDTO showUserById(@PathVariable int userId){
-        //return userService.userWithouPassById(userId);
-        return userService.userWithSubById(userId);
+    public UserWithoutPassDTO getUserById(@PathVariable int userId){
+        //return userService.userWithoutPassById(userId);
+        return userService.getUserWithSubById(userId);
     }
 
     @PutMapping("/userpass")
