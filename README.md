@@ -33,6 +33,7 @@ git clone https://github.com/rodopiip/TravellerOnline.git
 ```
 - Open IntelliJ project
 - Build project with Maven
+- [Install TODO settings](https://github.com/rodopiip/TravellerOnline/tree/master/IDE_TODOSettings)
 - Reverse-engeneer database by applying
  ```TravellerOnline\DataBase\ddl.sql```
 - Configure server port (Default: 3333)
