@@ -1,0 +1,71 @@
+<application>
+  <component name="CodeInsightSettings">
+    <option name="ADD_UNAMBIGIOUS_IMPORTS_ON_THE_FLY" value="true" />
+  </component>
+  <component name="TodoConfiguration">
+    <pattern useCustomColors="true" pattern="\btodo\b.*">
+      <option name="FOREGROUND" value="bec08a" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern pattern="\bfixme\b.*" />
+    <pattern useCustomColors="true" pattern="\bnote\b.*">
+      <option name="FOREGROUND" value="29c000" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bmemo\b.*">
+      <option name="FOREGROUND" value="607cc0" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bquestion\b.*">
+      <option name="FOREGROUND" value="c06568" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\battention\b.*">
+      <option name="FOREGROUND" value="8e00c0" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bquery\b.*">
+      <option name="FOREGROUND" value="afafaf" />
+      <option name="FONT_TYPE" value="3" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bhint\b.*">
+      <option name="FOREGROUND" value="bdc0" />
+      <option name="FONT_TYPE" value="1" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bok\b.*">
+      <option name="FOREGROUND" value="c00f" />
+      <option name="BACKGROUND" value="0" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="977ab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bfor now\b.*">
+      <option name="FOREGROUND" value="3033c0" />
+      <option name="BACKGROUND" value="212529" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="a7abab" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\brefactor\b.*">
+      <option name="FOREGROUND" value="fff2fe" />
+      <option name="BACKGROUND" value="3c3f41" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="9628b" />
+    </pattern>
+    <pattern useCustomColors="true" pattern="\bconflicting-todo\b.*">
+      <option name="FOREGROUND" value="c00610" />
+      <option name="BACKGROUND" value="0" />
+      <option name="FONT_TYPE" value="2" />
+      <option name="ERROR_STRIPE_COLOR" value="ffffff" />
+    </pattern>
+    <filter name="note">
+      <pattern index="2" />
+    </filter>
+    <filter name="\bmemo\b.*" />
+  </component>
+</application>
