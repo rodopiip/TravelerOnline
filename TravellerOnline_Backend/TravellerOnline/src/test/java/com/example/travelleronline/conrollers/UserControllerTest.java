@@ -1,37 +1,32 @@
 package com.example.travelleronline.conrollers;
 
-import com.example.travelleronline.controllers.UserController;
+import com.example.travelleronline.model.entities.User;
+import com.example.travelleronline.model.repositories.UserRepository;
 import com.example.travelleronline.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(UserController.class)
 public class UserControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
     @InjectMocks
-    private UserController userController;
-    @BeforeEach
-    public void setUp(){
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+    private UserService userService;
     @Test
-    public void  testGetUserById() throws Exception {//refactor what is the actual to-be-thrown exception?
-        //todo: test method for getUserById() in UserController
+    public void  testGetUserById(){
+        //note: Given: : Setting up the preconditions for the test
+        //todo: User user = new User(/*...*/);
+        //todo: when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        //note: When: Performing the action to be tested.
+        //todo: User result = userService.getUserWithSubById(1L);
+        //note: Then: Asserting that the expected outcome has been achieved.
+        //todo: assertEquals(user, result);
+        //todo: verify(userRepository, times(1)).findById(1L);
+        //todo: <<<log4J logs>>>
     }
 }
