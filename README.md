@@ -38,7 +38,7 @@ git clone https://github.com/rodopiip/TravellerOnline.git
  ```TravellerOnline\DataBase\ddl.sql```
 - Configure server port (Default: 3333)
 - Run the spring boot application from *TravellerOnlineApplication.java*
-- [Send requests via Postman](https://documenter.getpostman.com/view/26793882/2s93XsYRxe#b23de5e5-755e-45fa-9b4d-0dea998a74f6)
+- [Send requests via Postman](https://documenter.getpostman.com/view/26795343/2s93sXca32)
 
 ## Planned Features
 
